@@ -58,8 +58,14 @@ The processing sketch is composed of a set of visual arts and a scheduler.<br>
 The sketches of the visuals are written by the authors. Each visual has some parameters controlled by the audio features extracted by the JUCE’s plugin, and others controlled by the amount of motion detected by the TouchDesigner camera.<br>
 The scheduler chooses the visual art to show, according to the BPM detected by the JUCE’s plugin of the music.<br>
 
+## Interface
 
-# Scheduler Algorithm:
+The main menu has a simple interface. 
+There is a PLAY button. If it is clicked, Processing will start drawing one of the visuals, selected randomly.
+If you click the key “TAB” when Processing is drawing a visual, you can come back to the menu.
+
+
+## Scheduler Algorithm:
 
 
 When a new BPM is detected from the JUCE’s plugin it is send to Processing with OSC.<br>
@@ -69,7 +75,7 @@ Processing draws the new selected graphic.<br>
 It sends an OSC message to TouchDesigner, which changes the color of its visual, in order to have a visual feedback of the change also in the second panel.<br>
 
 
-# Motion Bar:
+## Motion Bar:
 
 
 There is a panel in the upper-left side of the screen which is filled with the sum of the motion values sent from TouchDesigner. The function of the bar is to represent the motion of the public: it grows if the motion is detected, otherwise it decreases.<br>
@@ -78,7 +84,10 @@ Algorithm: <br>
 * These values are continuously summed up. <br>
 * If this sum is over a certain threshold, an OSC message is sent to TouchDesigner. The function of this message is to trigger the lighting system.<br>
 
+## Manual Mode
 
+It is possible to change the next visual art to show, clicking the key "ENTER".
+The next selected visual will be selected randomly from the set of visuals
 
 
 # JUCE
