@@ -61,8 +61,9 @@ The scheduler chooses the visual art to show, according to the BPM detected by t
 
 The main menu has a simple interface. 
 There is a PLAY button. If it is clicked, Processing will start drawing one of the visuals, selected randomly.
+<p align="center"> <img width="121" height="56" src="images/play.jpg" > </p>
 If you click the key “TAB” when Processing is drawing a visual, you can come back to the menu.
-
+<p align="center"> <img width="155" height="103" src="images/tab.jpg" > </p>
 
 ## Scheduler Algorithm:
 
@@ -87,6 +88,7 @@ Algorithm: <br>
 ## Manual Mode
 
 It is possible to change the next visual art to show, clicking the key "ENTER".<br>
+<p align="center"> <img width="118" height="148" src="images/enter.jpg" > </p>
 The next selected visual will be selected randomly from the set of visuals.<br>
 
 
