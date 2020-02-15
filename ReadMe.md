@@ -58,9 +58,9 @@ The processing sketch is composed of a set of visual arts and a scheduler.<br>
 The sketches of the visuals are written by the authors. Each visual has some parameters controlled by the audio features extracted by the JUCE’s plugin, and others controlled by the amount of motion detected by the TouchDesigner camera.<br>
 The scheduler chooses the visual art to show, according to the BPM detected by the JUCE’s plugin of the music.<br>
 
-<p align="center"> <img width="1017" height="326" src="images/Tab_Visuals_1.jpg" > </p>
-<p align="center"> <img width="1017" height="326" src="images/Tab_Visuals_2.jpg" > </p>
-<p align="center"> <img width="1017" height="326" src="images/Tab_Visuals_3.jpg" > </p>
+<p align="center"> <img width="917" height="326" src="images/Tab_Visuals_1.jpg" > </p>
+<p align="center"> <img width="917" height="326" src="images/Tab_Visuals_2.jpg" > </p>
+<p align="center"> <img width="917" height="326" src="images/Tab_Visuals_3.jpg" > </p>
 
 ## Interface
 
