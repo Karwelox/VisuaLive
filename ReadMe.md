@@ -24,7 +24,7 @@ The second one is the main panel. It shows the graphic handled by Processing. Th
  
 
 
-<br>
+
 # Software
 
 Processing<br>
@@ -33,9 +33,9 @@ Juce<br>
 SoundSwitch<br>
 
 
-<p align="center"> <img width="799" height="451" src="images/protocols.jpg" > </p>
+<p align="center"> <img width="799" height="451" src="images/protocols.jpg" > </p> <br>
    
-<br> 
+
 # Communication and Protocols
 
 
@@ -50,7 +50,6 @@ SoundSwitch<br>
 
 
 
-<br>
 # Processing
 
 
@@ -87,10 +86,10 @@ Algorithm: <br>
 
 ## Manual Mode
 
-It is possible to change the next visual art to show, clicking the key "ENTER".
-The next selected visual will be selected randomly from the set of visuals
+It is possible to change the next visual art to show, clicking the key "ENTER".<br>
+The next selected visual will be selected randomly from the set of visuals.<br>
 
-<br>
+
 # JUCE
 
 
@@ -119,7 +118,7 @@ Beat detection algorithm: it detects the presence of a beat in the current frame
 If a beat is detected, it saves the time when the beat is detected in a queue.<br>
 If the queue is full, It calculates the variance of the distance of the times.<br>
 If the variance is under a certain threshold, we calculate the BPM as : sum of the delta times of the queue / size of the queue. <br>
-The bpm values is updated, unless it is similar to the previous BPM value detected. <br>
+The bpm values is updated, unless it is similar to the previous BPM value detected. <br><br>
 
 
 
@@ -130,11 +129,11 @@ The bpm values is updated, unless it is similar to the previous BPM value detect
 The TouchDesigner sketch is composed of three main parts:<br>
 1. The motion detection algorithm from the video stream and the relative forwarding of its value to Processing through OSC.<br>
 2. Particles visual art based on the original video stream with variations according to messages from the main through OSC.<br>
-3. Communication with Sound Switch for triggering the light event, through MIDI protocol.<br>
+3. Communication with Sound Switch for triggering the light event, through MIDI protocol.<br><br>
 
 
 
-<br>
+
 # SOUND SWITCH
 
 
