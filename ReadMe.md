@@ -1,5 +1,5 @@
-﻿# VISUALIVE
-<br>
+﻿# VISUALIVE <br>
+
 ## What is VisuaLive
  
 VisuaLive is a set of software thought to handle, modify and generate in a smart way the graphic part and control the lighting system of an interactive music installation.
