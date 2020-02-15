@@ -2,7 +2,7 @@
  
 ## What is VisuaLive
  
-VisuaLive is a set of software thought to handle, modify and generate in a smart way the graphic part and control the lighting system of an interactive music installation
+VisuaLive is a set of software thought to handle, modify and generate in a smart way the graphic part and control the lighting system of an interactive music installation.
  
  
 ## Idea and Goal
@@ -27,10 +27,10 @@ The second one is the main panel. It shows the graphic handled by Processing. Th
 
 # Software
 
-Processing.
-TouchDesigner.
-Juce.
-SoundSwitch.
+Processing.<br>
+TouchDesigner.<br>
+Juce.<br>
+SoundSwitch.<br>
 
 
 <p align="center"> <img width="799" height="451" src="images/protocols.jpg" > </p>
@@ -140,6 +140,6 @@ The idea is to activate a strong light sequence when a lot of motion is detected
 
 ## Software Developer Team
 
-Carmelo Fascella
-Francesco Pino
-Edoardo Epifani
+Carmelo Fascella<br>
+Francesco Pino<br>
+Edoardo Epifani<br>
