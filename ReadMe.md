@@ -1,5 +1,5 @@
 ﻿# VISUALIVE
-<br><br>
+<br>
 ## What is VisuaLive
  
 VisuaLive is a set of software thought to handle, modify and generate in a smart way the graphic part and control the lighting system of an interactive music installation.
@@ -24,7 +24,7 @@ The second one is the main panel. It shows the graphic handled by Processing. Th
  
 
 
-
+<br>
 # Software
 
 Processing<br>
@@ -35,8 +35,8 @@ SoundSwitch<br>
 
 <p align="center"> <img width="799" height="451" src="images/protocols.jpg" > </p>
    
- 
-## Communication and Protocols
+<br> 
+# Communication and Protocols
 
 
 * The audio output of the artist is connected to a sound card. The sound card is connected to the first computer which runs the Juce sketch.<br>
@@ -50,8 +50,8 @@ SoundSwitch<br>
 
 
 
-
-## Processing
+<br>
+# Processing
 
 
 The processing sketch is composed of a set of visual arts and a scheduler.<br>
@@ -90,7 +90,7 @@ Algorithm: <br>
 It is possible to change the next visual art to show, clicking the key "ENTER".
 The next selected visual will be selected randomly from the set of visuals
 
-
+<br>
 # JUCE
 
 
@@ -134,7 +134,7 @@ The TouchDesigner sketch is composed of three main parts:<br>
 
 
 
-
+<br>
 # SOUND SWITCH
 
 
