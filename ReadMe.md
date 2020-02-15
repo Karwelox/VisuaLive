@@ -27,10 +27,10 @@ The second one is the main panel. It shows the graphic handled by Processing. Th
 
 # Software
 
--Processing.
--TouchDesigner.
--Juce.
--SoundSwitch.
+Processing.
+TouchDesigner.
+Juce.
+SoundSwitch.
 
 
 <p align="center"> <img width="799" height="451" src="images/protocols.jpg" > </p>
