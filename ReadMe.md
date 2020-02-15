@@ -1,5 +1,5 @@
 ﻿# VISUALIVE
- 
+<br><br>
 ## What is VisuaLive
  
 VisuaLive is a set of software thought to handle, modify and generate in a smart way the graphic part and control the lighting system of an interactive music installation.
@@ -77,6 +77,7 @@ It sends an OSC message to TouchDesigner, which changes the color of its visual,
 
 ## Motion Bar:
 
+<p align="center"> <img width="50" height="117" src="images/motionbar.jpg" > </p>
 
 There is a panel in the upper-left side of the screen which is filled with the sum of the motion values sent from TouchDesigner. The function of the bar is to represent the motion of the public: it grows if the motion is detected, otherwise it decreases.<br>
 Algorithm: <br>
