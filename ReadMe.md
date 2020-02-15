@@ -118,7 +118,7 @@ The bpm values is updated, unless it is similar to the previous BPM value detect
 
 
 The TouchDesigner sketch is composed of three main parts:
-1. The motion detection algorithm from the video stream and the relative forwarding of its value to the main panel through OSC.
+1. The motion detection algorithm from the video stream and the relative forwarding of its value to Processing through OSC.
 2. Particles visual art based on the original video stream with variations according to messages from the main through OSC.
 3. Communication with Sound Switch for triggering the light event, through MIDI protocol.
 
