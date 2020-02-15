@@ -1,87 +1,143 @@
-<p align="center"> <img width="877" height="494" src="images/Festivalle_polimi.JPG" > </p>
+﻿# VISUALIVE
+ 
+## What is VisuaLive
+ 
+VisuaLive is a set of software thought to handle, modify and generate in a smart way the graphic part and control the lighting system of an interactive music installation
+ 
+ 
+## Idea and Goal
+ 
+The idea is to give an alternative visual experience to the audience, inside an experimental installation.
+The goal is to realize a system where all the visual components (visual and lights) of the performance are controlled by the system autonomously, and modified thanks to the amount of motion of the public and the audio features extracted in real time from the audio.
+The installation
+VisuaLive is thought to be used inside an experimental installation, hosted in a medium-sized room with a small number of people, where an electronic music performance is hosted.
+The installation is ideated in a way that the user can enjoy this experience realizing on his own how all the system works, thanks to his visual and auditory sense.
+There are two panels, where two different graphics are showed.
+The first one is a graphic handled by Touch Designer which varies with the motion detected by a camera. The camera captures the movement of the people and this value will be used from the other graphic to modify its parameters. The user interacts with the system thanks to the visual feedback of the graphic, that change accordingly to the motion.
+The second one is the main panel. It shows the graphic handled by Processing. This is shown on the main panel of the installation and it represents the abstract visual art of the performance. 
+ 
 
-# 1. The concept
-
-The goal of this project is the automated control of the dynamic lighting of an architectural structure composed by LED stripes: this is done by a plug-in which analyzes the mixer-output audio signal in real-time.
-
-# 2. Plugin Interface
-
-![gif](images/interface.gif)<br>
-
-The Plug-in is all made by using the C++ JUCE application framework. 
-# 3. The Algorithm
-
-The Algorithm is based on few simples points:
-
-- Beat detection frame by frame from the signal and the BPM calculus from it;
-- Features extraction from the actual audio frame: audio panning, Audio Spectral Centroid (for audio "birghtness" calculation) and velocity (as an indicator of the audio intensity);
-- Once features are extracted, a MIDI message created by a set of rules related to those characteristics is sent, in order to activate 3N possible light patterns.
-
-##  3.1 Beat Tracking algorithm
-
-The beat tracking algorithm is mainly based on a statistical model which use the energy content of the audio signal.
-
-The first choise to make for the analysis of the audio frame is the window: the one chosen here is a rectangular one 1024 samples large with 0% overlap, to avoid latency problems and because we do not care a specific frequency tracking. The sampling frequency that we are considering is 44100 Hz.
-
-<p align="center"> <img width="575" height="218" src="images/beattrack_0(1).png" > </p>
-
-Since this Plug-in is mainly thought for electro-music situations, we are mostly interested in a few range of frequencies: the choice has been made considering the "snare" [range]  and "kick" [range]  frequency range where we are sure to find the beat of interest.
-
-<p align="center"> <img width="475" height="159" src="images/beattrack_0(2).png" > </p>
-
-For every 1024-samples frame we calculate the energy associated. Since we are analyzing 1024 samples of audio, to take 1 second history we need to store 43 blocks in an array and then calculate the average energy for that second. Then, every 1024 samples a threshold is calculated based on the variance of the "history energy array" calculated before and that is updated every 1024 samples to improve the real-time performances. If the difference of energy pass that certain threshold we can say there is a beat.
-
-<p align="center"> <img width="538" height="230" src="images/beattrack(3).png" > </p>
-
-# 4. Feature extraction phase
-
-Features' extraction is a crucial phase for what concern the rules for the choice of the lights' animations: this is made in real-time, frame by frame and independently from the beat-tracking algorithm.
-
-##  4.1 Panning
-
-The panning feature checks every 1024 samples the average energy content whithin each channel (Left and Right) to determine whether the signal is more present in one side with respect to the other. The energy is normalized between 0 and 1: subtracting the results of the  L-channel from the R-channel ones we can obtain different infos, -1 if the sound is completely panned to the left or 0 to the center or 1 to the right or among these values.
-
-##  4.2 Audio Spectral Centroid
-
-The audio spectral centroid (ASC) gives the center of gravity of a log-frequency power spectrum.
-
->Because the spectral centroid is a good predictor of the "brightness" of a sound it is widely used in digital audio and music processing as an automatic measure of musical timbre.
-
-<p align="center"> <img width="683" height="123" src="images/spectralcentroid1.png" > </p>
-
-All coefficients below 62.5Hz are summed and represented by a single coefficient, in order to prevent a non-zero DC component and/or very low frequency components from having a disproportionate weight.<br>
-_P'(k')_ is the modified spectrum, _f'(k')_ is the center of gravity of each element in the power-spectrum.
-
-<br><p align="center"> <img width="627" height="129" src="images/ASCexample.png" > <br> <i>ASC example.</i></p>
-
-##  4.3 Velocity
-
-The velocity feature is thought for the management of the LED stripes' light intensity. As for the other features the calculus is done independently from the beat-tracking and parallel-wise, in order to optimize the real-time performance and reduce the latency. Once this feature is extracted, a midi message with this information is sent continuously to avoid a discrete variation of light intensity during the performance (stroboscopic effect).<br>
-It is calculated considering the audio energy content in the low-frequency band in order to enhance the beat effect. Finally, the log-frequency scale is used to represent the frequency band distribution that are present in the human ear system.
-
-![gif](images/velocity(2).gif) <br>
-
-# 5. Lights' animation 
-For the choice of a given set of light patterns, we need a bunch of rules which depend on the feature extracted. 
-##  5.1 Rules for animations' choice
-
-Looking at the tree in the figure below, the path to follow is straightforward: <br>
-&nbsp; &nbsp;1 - a beat is detected; <br>
-&nbsp; &nbsp;2 - the panning value extracted is checked to be at left or center or right; <br>
-&nbsp; &nbsp;3 - once the branch is chosen, depending on the value of the Audio Spectral Centroid (ASC) a given number of MIDI control message(in a range from 1 to 42 maximum per branch) is chosen to be sent to the lights' controller software. This message with that number will activate the corrisponding animation designed by the user.<br>
-
-<p align="center"> <img width="732" height="244" src="images/tree.png" > </p>
-
-##  5.2 Animations management
-In this section we look at the Animation Management part which is placed at the bottom of the interface:<br>
-
-&nbsp; &nbsp;1 - The first command allows the user to choose among 16 different channels through which send the MIDI messages;<br>
-&nbsp; &nbsp;2 - The second command allows the user to "slow down" the sending of the MIDI messages according to the beat. Indeed, if the song      currently playing had too quick four on the floors, this would lead to many animation changes over the time.<br>
-&nbsp; &nbsp;3 - The third command allows the user to manually decide how many and what kind of animations activate.<br>
-
-<p align="center"> <img width="511" height="117" src="images/animation_management.png" > </p>
-
-# 6.The rendering phase: 3D Mapper + Plugin 
+<p align="center"> <img width="799" height="451" src="images/protocols.jpg" > </p>
 
 
-# Live Performance on stage
+
+
+
+
+# Software
+
+-Processing
+-TouchDesigner
+-Juce
+-SoundSwitch
+
+
+   
+ 
+## Communication and Protocols
+
+
+* The audio output of the artist is connected to a sound card. The sound card is connected to the first computer which runs the Juce sketch.
+* The values extracted by the Juce sketch are sent to the second computer with OSC message.
+* The second computer which runs Processing sketch is connected to the main panel by a projector or by HDMI
+* The third computer which runs Touch Designer sketch is connected to the second panel by a projector or by HDMI.
+* The third computer sends motion values to the second one with OSC messages.
+* The second computer sends an OSC message to the third one if the motion bar is full.
+* The third computer sends MIDI message to himself to trigger SoundSwitch, that runs on the same computer.
+* The third computer is connected to a DMX Light with U-DMX cable, and it sends DMX values to the light
+
+
+
+
+## Processing
+
+
+The processing sketch is composed of a set of visual arts and a scheduler.
+The sketches of the visuals are written by the authors. Each visual has some parameters controlled by the audio features extracted by the JUCE’s plugin, and others controlled by the amount of motion detected by the TouchDesigner camera.
+The scheduler chooses the visual art to show, according to the BPM detected by the JUCE’s plugin of the music.
+
+
+# Scheduler Algorithm:
+
+
+When a new BPM is detected from the JUCE’s plugin it is send to Processing with OSC.
+If no other BPM values are detected for 5 seconds, the scheduler function is triggered, otherwise, it waits until other BPM values come.
+Each visual is associated to a specific range of BPM. The scheduler chooses one visual in the range of the BPM detected, in a random way.
+Processing draws the new selected graphic.
+It sends an OSC message to TouchDesigner, which changes the color of its visual, in order to have a visual feedback of the change also in the second panel
+
+
+# Motion Bar:
+
+
+There is a panel in the upper-left side of the screen which is filled with the sum of the motion values sent from TouchDesigner. The function of the bar is to represent the motion of the public: it grows if the motion is detected, otherwise it decreases.
+Algorithm: 
+* Each motion value received is scaled in a new range, from 0 to the max value detected (continuously updated), to the new range [-0.05,1]
+* These values are continuously summed up. 
+* If this sum is over a certain threshold, an OSC message is sent to TouchDesigner. The function of this message is to trigger the lighting system.
+
+
+
+
+# JUCE
+
+
+The plugin is realized with Juce, a C++ application framework.
+This plugin was realized to automate the control of the lighting of an architectural structure composed by LED stripes in a dynamic and smart way, during an electronic music show. The idea was to create a beat detector algorithm in order to trigger a certain light pattern, modifying the parameter of this pattern using other audio features.
+You can see how it works in detail at the following link: https://github.com/Karwelox/Festivalle
+
+
+It analyzes the song played in real time and it calculates:
+1. Beat detection
+2. Spectral centroid
+3. Amount of energy
+4. Panning value
+5. BPM value.
+
+
+## BPM detection algorithm
+
+
+The algorithm is a real-time estimate of the current played song. It is optimized for electronic music with the presence of a drum pattern composed mainly by a kick and a snare. It is base on the beat detection algorithm.
+The bpm calculated is an estimate of the actual BPM value of the song. 
+We use this value as a mathematical estimate to understand what kind of song the artist is playing, and to trigger to proper abstract graphic to show.
+
+
+Beat detection algorithm: it detects the presence of a beat in the current frame of the FFT
+If a beat is detected, it saves the time when the beat is detected in a queue
+If the queue is full, It calculates the variance of the distance of the times.
+If the variance is under a certain threshold, we calculate the BPM as :                                                         sum of the delta times of the queue / size of the queue.
+The bpm values is updated, unless it is similar to the previous BPM value detected. 
+
+
+
+
+# TOUCHDESIGNER
+
+
+The TouchDesigner sketch is composed of three main parts:
+1. The motion detection algorithm from the video stream and the relative forwarding of its value to the main panel through OSC.
+2. Particles visual art based on the original video stream with variations according to messages from the main through OSC.
+3. Communication with Sound Switch for triggering the light event, through MIDI protocol.
+
+
+
+
+# SOUND SWITCH
+
+
+It is a software used to trigger the lightning system, choosing the proper sequence of DMX values to send. 
+For the demonstration we used only one light, and we decided to use a sequence to represent a stroboscopic effect.
+If the motion bar of the main panel is full, Processing sends an OSC message to TouchDesigner, which sends a MIDI message that activates the sequence.
+After a certain period of time, written by the authors, Processing sends another OSC message to TouchDesigner to stop the stroboscopic effect.
+The idea is to activate a strong light sequence when a lot of motion is detected.
+
+
+## References
+
+
+## Software Developer Team
+
+Carmelo Fascella
+Francesco Pino
+Edoardo Epifani
