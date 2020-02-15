@@ -74,7 +74,7 @@ If you click the key “TAB” when Processing is drawing a visual, you can come
 
 
 When a new BPM is detected from the JUCE’s plugin it is send to Processing with OSC.<br>
-If no other BPM values are detected for 5 seconds, the scheduler function is triggered, otherwise, it waits until other BPM values come.<br>
+If no other BPM values are detected for a selected interval of times, the scheduler function is triggered, otherwise, it waits until other BPM values come.<br>
 Each visual is associated to a specific range of BPM. The scheduler chooses one visual in the range of the BPM detected, in a random way.<br>
 Processing draws the new selected graphic.<br>
 It sends an OSC message to TouchDesigner, which changes the color of its visual, in order to have a visual feedback of the change also in the second panel.<br>
