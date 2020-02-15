@@ -9,7 +9,13 @@ VisuaLive is a set of software thought to handle, modify and generate in a smart
  
 The idea is to give an alternative visual experience to the audience, inside an experimental installation.
 The goal is to realize a system where all the visual components (visual and lights) of the performance are controlled by the system autonomously, and modified thanks to the amount of motion of the public and the audio features extracted in real time from the audio.
-The installation
+
+
+## The installation
+
+<p align="center"> <img width="607" height="329" src="images/installation.jpg" > </p>
+
+
 VisuaLive is thought to be used inside an experimental installation, hosted in a medium-sized room with a small number of people, where an electronic music performance is hosted.
 The installation is ideated in a way that the user can enjoy this experience realizing on his own how all the system works, thanks to his visual and auditory sense.
 There are two panels, where two different graphics are showed.
@@ -17,21 +23,17 @@ The first one is a graphic handled by Touch Designer which varies with the motio
 The second one is the main panel. It shows the graphic handled by Processing. This is shown on the main panel of the installation and it represents the abstract visual art of the performance. 
  
 
-<p align="center"> <img width="799" height="451" src="images/protocols.jpg" > </p>
-
-
-
-
 
 
 # Software
 
--Processing
--TouchDesigner
--Juce
--SoundSwitch
+-Processing.
+-TouchDesigner.
+-Juce.
+-SoundSwitch.
 
 
+<p align="center"> <img width="799" height="451" src="images/protocols.jpg" > </p>
    
  
 ## Communication and Protocols
