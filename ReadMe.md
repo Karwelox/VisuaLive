@@ -1,4 +1,5 @@
 ﻿# VISUALIVE <br>
+ <p align="center"> <img width="600" height="346" src="images/MainMenu.gif" > </p>
 
 ## What is VisuaLive
  
