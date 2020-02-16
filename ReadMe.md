@@ -69,6 +69,7 @@ There is a PLAY button. If it is clicked, Processing will start drawing one of t
 <p align="center"> <img width="121" height="56" src="images/play.jpg" > </p>
 If you click the key “TAB” when Processing is drawing a visual, you can come back to the menu.
 <p align="center"> <img width="155" height="103" src="images/tab.jpg" > </p>
+If you click the key "m", the system switches to manual mode. It won't change the actual graphic even if it will be detected a new BPM.
 
 ## Scheduler Algorithm:
 
