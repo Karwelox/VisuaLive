@@ -64,7 +64,7 @@ The scheduler chooses the visual art to show, according to the BPM detected by t
 
 ## Interface
 
-The main menu has a simple interface. 
+The main menu has a simple interface. <br>
 You can insert the IP of the computer that run Processing and TouchDesigner sketch in the proper text field. </p>
 There is a PLAY button. If it is clicked, Processing will start drawing one of the visuals, selected randomly, and it starts the connection.
 <p align="center"> <img width="121" height="56" src="images/play.jpg" > </p>
