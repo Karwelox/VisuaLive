@@ -88,7 +88,7 @@ There is a panel in the upper-left side of the screen which is filled with the s
 Algorithm: <br>
 * Each motion value received is scaled in a new range, from 0 to the max value detected (continuously updated), to the new range [-0.05,1].<br>
 * These values are continuously summed up. <br>
-* If this sum is over a certain threshold, an OSC message is sent to TouchDesigner. The function of this message is to trigger the lighting system.<br>
+* If this sum is over a certain threshold, an OSC message is sent to TouchDesigner when a new beat is detected. The function of this message is to trigger the lighting system.<br>
 
 ## Manual Mode
 
