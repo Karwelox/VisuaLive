@@ -15,7 +15,7 @@ class Drop{
     //yspeed = yspeed + grav; 
    
     
-     y = y+(yspeed*((averageMotion*2)+0.5));
+     y = y+(yspeed*((averageMotion)+0.2));
      
      
     
@@ -30,7 +30,7 @@ class Drop{
     strokeWeight(thick);
     //float mapY = map(y, 0, height, 50, 255);
     //stroke(mapY);   //da mappare con la velocity
-    stroke((int)detection_velocity*2, 200);
+    stroke((int)detection_velocity*2,50,250, 140+(scaledVelocity*80));
 
     line(x,y,x,y+len);
     

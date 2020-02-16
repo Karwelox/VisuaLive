@@ -112,7 +112,7 @@ class Object3D{
   
    
   
-  angle += currentMotion*0.05;
+  angle += currentMotion*0.1;
     
     
   }

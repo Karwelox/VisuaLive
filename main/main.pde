@@ -31,9 +31,11 @@ float detection_beat;
 float detection_velocity;
 float detection_panning = 0;
 float detection_centroid = 0;
+float detection_continuePanning = 0;
 float prev_centroid = 0;
 float prev_averagePanning = 0;
 float prev_velocity = 0;
+float prev_continuePanning = 0;
 
 float maxCentroid=0;  //valore usato per mappare il centroid
 float currentCentroid=0;     //valore del centroid usato nella gestione delle visual (mappato da -1 a 1)
@@ -51,8 +53,8 @@ int fullMotionValue = 100;
 ArrayList<Integer> arrayVelocity ;
 int sizeArrayVelocity = 40;
 
-OscP5 oscP5 = new OscP5(this,12000);
-OscP5 oscP5_carm = new OscP5(this, 12001);
+OscP5 oscP5;
+OscP5 oscP5_carm;
 //NetAddress myRemoteLocation_receiveFromTouchDesigner = new NetAddress("192.168.1.12",12000);           //indirizzo di chi manda motion da TouchDesigner
 //NetAddress myRemoteLocation_receiveFromJuce = new NetAddress("192.168.1.3",12001);    //indirizzo di chi manda audio features da Juce
 //NetAddress myRemoteLocation_sendToTouchDesigner= new NetAddress("192.168.1.12",12002);   //indirizzo touch su cui invio a touch
@@ -88,6 +90,9 @@ boolean hasFinished = true;
 
 boolean toggle_beat;
 
+boolean currentBeat;
+boolean fullBar = false;
+
 boolean manualMode = false;
 
 PImage backgroundImage;   //immagine background del main
@@ -100,7 +105,10 @@ ArrayList<Float> motionList = new ArrayList<Float>();
 
 
 ArrayList<Float> panningList = new ArrayList<Float>();
+ArrayList<Float> panningContinueList = new ArrayList<Float>();
 float averagePanning;
+float prev_averageContinuePanning;
+float averageContinuePanning;
 
 float scaledVelocity;
 
@@ -166,7 +174,7 @@ void setup() {
      .setFont(mainMenu.ipFont)
      .setAutoClear(false)
      .setColor(colorIP)
-     .setText("192.168.1.12")
+     .setText("192.168.1.3")
      ;
      
   ipTextFieldJuce = cp5.addTextfield("Juce IP")
@@ -175,7 +183,7 @@ void setup() {
      .setFont(mainMenu.ipFont)
      .setAutoClear(false)
      .setColor(colorIP)
-     .setText("192.168.1.3")
+     .setText("192.168.1.2")
      ;
 
 
@@ -370,6 +378,13 @@ void oscEvent(OscMessage theOscMessage) {
     
   }
   
+  if (theOscMessage.addrPattern().equals("/juce/continuePanning")){
+    prev_continuePanning = detection_continuePanning;
+    detection_continuePanning = +theOscMessage.get(0).floatValue();
+    //smoothContinuePanning();
+    
+  }
+  
     
   //println("BEAT: " +detection_beat);
   //println("MOVEMENT: " +detection_motion);
@@ -457,7 +472,7 @@ void schedulerVisual(){
     sendOSCMessageColor();
   }
 
-  else if(current_bpm >=135 && previousVisual != 9){
+  else if(current_bpm >=140 && previousVisual != 9){
     currentVisual=9;
     sendOSCMessageColor();
   }
@@ -468,11 +483,11 @@ void schedulerVisual(){
        cam.setMaximumDistance(500);
        cam.setMinimumDistance(40);  
      }
-     /*
+     
      if(currentVisual==6){
        background(0);
      }
-     */
+     
      
      
 }
@@ -487,27 +502,38 @@ void mapCentroid(){
 }
 
 
+
+
 void mapMotion(){
    //println(this.sumMotion);
   if(detection_motion>maxMotion)
       maxMotion=detection_motion;
       
-      
-  
   currentMotion = map(detection_motion, 0, maxMotion, 0, 1);  //mappo i valori del motion fra 0 e 1
   currentMotionPannel = map(detection_motion, 0, maxMotion, -0.05, 1)*0.1;
  
   if(currentVisual!=0) {   //faccio la somma solo se la visual corrent non è il menù
     
-  if(this.sumMotion+currentMotionPannel>=0 && this.sumMotion+currentMotionPannel<=fullMotionValue)   //100 è il valore definito della dimensione della barra
+  if(this.sumMotion+currentMotionPannel>=0 && this.sumMotion+currentMotionPannel<=fullMotionValue){   //100 è il valore definito della dimensione della barra
     this.sumMotion = this.sumMotion + currentMotionPannel;
-    
-    
-  if (this.sumMotion+currentMotionPannel>fullMotionValue){
-    sendOSCMessageLight();
   }
-  if(this.sumMotion+currentMotionPannel<0 || this.sumMotion+currentMotionPannel>fullMotionValue)           //per azzerare la somma
-    this.sumMotion=0;  
+    
+    
+  if ((this.sumMotion+currentMotionPannel>fullMotionValue)&& (fullBar==false) ){
+    //sendOSCMessageLight();
+    println("PRIMO IF");
+    fullBar = true;
+    currentBeat = toggle_beat;
+    //this.sumMotion=0;
+  }
+  
+    //println(currentBeat, toggle_beat);
+  if((currentBeat==!toggle_beat) && (fullBar==true) && (this.sumMotion+currentMotionPannel<0 || this.sumMotion+currentMotionPannel>fullMotionValue)){           //per azzerare la somma
+    this.sumMotion=0; 
+    sendOSCMessageLight();
+    fullBar = false;
+    println("SECONDO");
+    }
   }
 
   
@@ -567,7 +593,8 @@ void keyPressed(){
     
     
     
-    currentVisual =  round(random(1, totVisuals));  
+    //currentVisual =  round(random(1, totVisuals)); 
+    currentVisual = (currentVisual+1)%totVisuals+1;
     //currentVisual = 10;
     
     if(currentVisual==prevVisual)    //per evitare che sia generata la stessa subito dopo;
@@ -700,7 +727,7 @@ void smoothMotion(float currentMotion){
 
 void smoothPanning() {
   
-  if(panningList.size()<20)
+  if(panningList.size()<100)
     panningList.add(detection_panning);
     
   else{
@@ -712,7 +739,7 @@ void smoothPanning() {
     averagePanning+=panningList.get(i);
   
   prev_averagePanning = averagePanning;
-  averagePanning = averagePanning/20;
+  averagePanning = averagePanning/100;
 }
 
 
@@ -722,10 +749,32 @@ void smoothPanning() {
   
   
 void createOSCConnection(){
+  oscP5 = new OscP5(this,12000);
+  oscP5_carm = new OscP5(this, 12001);
   myRemoteLocation_receiveFromTouchDesigner = new NetAddress(ipTextTD,12000);           //indirizzo di chi manda motion da TouchDesigner
   myRemoteLocation_receiveFromJuce = new NetAddress(ipTextJuce,12001);    //indirizzo di chi manda audio features da Juce
   myRemoteLocation_sendToTouchDesigner= new NetAddress(ipTextTD,12002);
   
   //println(ipTextTD);
   //println(ipTextJuce);
+}
+
+
+void smoothContinuePanning() {
+  
+  prev_averageContinuePanning = averageContinuePanning;
+  
+  if(panningContinueList.size()<25)
+    panningContinueList.add(detection_continuePanning);
+    
+  else{
+    panningContinueList.remove(0);
+    panningContinueList.add(detection_continuePanning);
+  }
+  
+  for(int i=0; i<panningList.size(); i++)
+    averageContinuePanning+=panningContinueList.get(i);
+  
+  
+  averageContinuePanning = averageContinuePanning/25;
 }

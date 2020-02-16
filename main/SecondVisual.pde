@@ -19,8 +19,8 @@ class SecondVisual{
     
   SecondVisual(){
 
-    cube = new Object3D(width/2, height/2,4, 1);
-    piramid = new Object3D(width/2, height/2, 4, 2);
+    cube = new Object3D(width/2, height/2,5.4, 1);
+    piramid = new Object3D(width/2, height/2, 5.4, 2);
 
     
     

@@ -13,6 +13,8 @@ void drawVisual() {
 
   
   if(toggle_beat && stopDrawFlag==true){
+    symmetry = (2*(round(random(3,6))));
+    angle = 360/ symmetry;
     background(0);
     stopDrawFlag=false;
   }  
@@ -24,11 +26,14 @@ void drawVisual() {
   drawPanel();
   
   translate(width / 2, height / 2);
-  float pCentroid = map(prev_centroid, -1, 1, 0, width/2);
-  float actualCentroid = map(currentCentroid*random(-2,2), -1, 1, 0, width/2);
+  float pCentroid = map(prev_centroid, -1, 1, 0, width);
+  float actualCentroid = map(currentCentroid, -1, 1, 0, width);
+  //float pPanning = map(prev_averageContinuePanning, -1, 1, 0, width/2);
+  //float actualPanning = map(averageContinuePanning, -1, 1, 0, width/2);
   float pVelocity = map(prev_velocity, 0, 127, 0, height/2);
   float actualVelocity = map(detection_velocity, 0, 127, 0, height/2);
   
+  //println(prev_averageContinuePanning, averageContinuePanning);
   int mx = (int)(actualCentroid) - width / 2;
   int my = (int)(actualVelocity) - height / 2;
   int pmx = (int)(pCentroid) - width / 2;
@@ -37,7 +42,8 @@ void drawVisual() {
   
     int hu = int(map(sin(radians(xoff)), -1, 1, 0, 255));
     xoff += 1;
-    //println(30+averageMotion*500);
+    colorMode(HSB,255);
+    //println(60+averageMotion*500);
     stroke(hu,255, 60+averageMotion*500, 100);
     
     for (int i = 0; i < symmetry; i++) {

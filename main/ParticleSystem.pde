@@ -19,7 +19,7 @@ class ParticleSystem{
   }
   void addParticle(float centroidCenter){
     //println(centroidCenter);
-    PVector actualCenter = new PVector((averagePanning*width/2)+width/2, centroidCenter);
+    PVector actualCenter = new PVector((detection_continuePanning*width/2)+width/2, centroidCenter);
     //println((averagePanning*width/2)+width/2);
     this.particles.add(new Particle(actualCenter, 5, random(0,255)));
   }
