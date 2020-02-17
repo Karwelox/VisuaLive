@@ -2,7 +2,8 @@
 class RainVisual{
 Drop[] drops;
 RainVisual(){
-    img = loadImage("tumblerino2.jpg");
+  //inserire FS.jpg per il fullscreen
+    img = loadImage("tumblerino2FS.jpg");
     drops = new Drop[2000];
     for(int i=0; i<drops.length;i++){
         drops[i] = new Drop();

@@ -1,0 +1,27 @@
+[
+  {  
+    "comment": "first range",
+    "lower": 70,
+    "upper": 95,
+  },
+  {  
+    "comment": "second range",
+    "lower": 95,
+    "upper": 115,
+  },
+  { 
+    "comment": "third range",
+    "lower": 115,
+    "upper": 125,
+  },
+  {  
+    "comment": "fourh range",
+    "lower": 125,
+    "upper": 145,
+  },
+  {   
+    "comment": "fifth range",
+    "lower": 145,
+    "upper": 200,
+  },
+]

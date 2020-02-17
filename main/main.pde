@@ -9,7 +9,7 @@ import peasy.*;
 PeasyCam cam;
 ControlP5 cp5;
 
-final int minSecondsChangeVisual = 5;    //tempo in secondi dopo il quale è possibile cambiare visual
+final float timeToWaitOtherBPM = 3.5;    //tempo in secondi dopo il quale è possibile cambiare visual
 
 int currentVisual = 0; //indica la visual attuale
 int prevVisual = 0;
@@ -126,6 +126,10 @@ String ipTextTD;
 Textfield ipTextFieldJuce;
 String ipTextJuce;
 
+JSONArray rangeBPMValuesJSON;
+int numRanges = 5;
+int[][] rangeBPMMatrix = new int[numRanges][2];
+
 
 void setup() {
   //size(300,300);
@@ -192,6 +196,19 @@ void setup() {
      ;
 
 
+  rangeBPMValuesJSON = loadJSONArray("jsonFile.json");
+
+  for (int i = 0; i < rangeBPMValuesJSON.size(); i++) {
+    
+    JSONObject rangeBPMValues = rangeBPMValuesJSON.getJSONObject(i); 
+
+    rangeBPMMatrix[i][0] = rangeBPMValues.getInt("lower");
+    rangeBPMMatrix[i][1] = rangeBPMValues.getInt("upper");
+  }
+  
+  for (int i = 0; i < rangeBPMValuesJSON.size(); i++){
+    println(rangeBPMMatrix[i][0] + "  " + rangeBPMMatrix[i][1]);
+  }
   
 }
 
@@ -340,15 +357,21 @@ void oscEvent(OscMessage theOscMessage) {
   /*print("### received an osc message.");
   print(" addrpattern: "+theOscMessage.addrPattern());
   println(" typetag: "+theOscMessage.typetag());
-  //println(" value"+theOscMessage.arguments());
-  //println("##VALUE "+theOscMessage.get(0).floatValue());
+  println(" value"+theOscMessage.arguments());
+  println("##VALUE "+theOscMessage.get(0).floatValue());
   */
+  //println(theOscMessage.address());
+  //println("/"+ipTextTD + "   " + theOscMessage.address());
   
-  if (theOscMessage.addrPattern().equals("/mono")){
+  if(theOscMessage.address().equals("/"+ipTextTD)){
+  if (theOscMessage.addrPattern().equals("/motion")){
     detection_motion = +theOscMessage.get(0).floatValue();
     mapMotion();
     smoothMotion(currentMotion);
+    }
   }
+  
+  if(theOscMessage.address().equals("/"+ipTextJuce)){
   if (theOscMessage.addrPattern().equals("/juce/bpm")){
     //detection_bpm = +theOscMessage.get(0).intValue();
     
@@ -356,7 +379,7 @@ void oscEvent(OscMessage theOscMessage) {
     counterBPM++;   //aggiorno 
     println("NUOVO BPM ARRIVATO: " + last_bpm, "ID : ", +counterBPM);
     updateCurrentBPM(counterBPM, last_bpm); 
-    
+    //println(currentVisual);
 
   }
   if (theOscMessage.addrPattern().equals("/juce/velocity")){
@@ -388,6 +411,7 @@ void oscEvent(OscMessage theOscMessage) {
     detection_continuePanning = +theOscMessage.get(0).floatValue();
     //smoothContinuePanning();
     
+    }
   }
   
     
@@ -404,7 +428,6 @@ void oscEvent(OscMessage theOscMessage) {
 //local_bpm is the detected bpm
 void updateCurrentBPM(final int localCounterBPM, final int local_bpm){
   
-    final float seconds = 4;   //time to wait for other bpm values   
     
     
     timer.schedule(new TimerTask(){
@@ -423,7 +446,7 @@ void updateCurrentBPM(final int localCounterBPM, final int local_bpm){
         println("NO UPDATE: another BPM value is detected in the choosen interval of time");
       }
     }
-  }, (long) (seconds*1e3));
+  }, (long) (timeToWaitOtherBPM*1e3));
 }
 
 
@@ -433,66 +456,70 @@ void schedulerVisual(){
   current_bpm = detection_bpm;
   
   int previousVisual = currentVisual;
-  float randValue = random(1);;
-  
-  if(current_bpm>70 && current_bpm<90 && previousVisual != 1 && previousVisual !=2){
+  float randValue = random(1);
+  //println(randValue +"  " +previousVisual +"   " +currentVisual +"   " +(randValue<=0.5));
+  if(current_bpm>rangeBPMMatrix[0][0] && current_bpm<rangeBPMMatrix[0][1] && previousVisual !=1 && previousVisual !=2){
     
-    if(randValue<=0.5)
+    if(randValue<=0.5){
       currentVisual=1;
-    else
+    }
+    else{
       currentVisual=2;
+    }
+    //println(previousVisual +"   " +currentVisual);  
       
     sendOSCMessageColor();
   }
     
-  else if(current_bpm>=90 && current_bpm<100 && previousVisual != 3 && previousVisual !=4){
+  else if(current_bpm>=rangeBPMMatrix[1][0] && current_bpm<rangeBPMMatrix[1][1] && previousVisual !=3 && previousVisual !=4){
     
     if(randValue<=0.5)
       currentVisual=3;
     else
       currentVisual=4;
-    
+      
+       //println(previousVisual +"   " +currentVisual);
     
     sendOSCMessageColor();
   }
     
-  else if(current_bpm>=100 && current_bpm<120 && previousVisual != 5 && previousVisual !=6){
+  else if(current_bpm>=rangeBPMMatrix[2][0] && current_bpm<rangeBPMMatrix[2][1] && previousVisual !=5 && previousVisual !=6){
     
     if(randValue<=0.5)
       currentVisual=5;
     else
       currentVisual=6;
+     //println(previousVisual +"   " +currentVisual);
 
     
     sendOSCMessageColor();
   }
     
-  else if(current_bpm >=120 && current_bpm<135 && previousVisual != 7 && previousVisual !=8){
+  else if(current_bpm >=rangeBPMMatrix[3][0] && current_bpm<rangeBPMMatrix[3][1] && previousVisual !=7 && previousVisual !=8){
     
     if(randValue<=0.5)
       currentVisual=7;
     else
       currentVisual=8;
+     //println(previousVisual +"   " +currentVisual);
+
     
     sendOSCMessageColor();
   }
 
-  else if(current_bpm >=140 && previousVisual != 9){
+  else if(current_bpm >=rangeBPMMatrix[4][0] && current_bpm< rangeBPMMatrix[4][1] && previousVisual != 9){
     currentVisual=9;
     sendOSCMessageColor();
   }
-
+/* ATTENZIONE GLITCH
     if(currentVisual==5){
        cam.setDistance(0);
        cubeVisual.d = false;
        cam.setMaximumDistance(500);
        cam.setMinimumDistance(40);  
      }
-     
-     if(currentVisual==6){
-       background(0);
-     }
-     
+
+     */
      
      
 }
@@ -575,10 +602,13 @@ void sendOSCMessageColor(){
   
   //Controllo msg consecutivi uguali o RGB 0,0,0 da evitare
   if((pred == redValue && pgreen == greenValue && pblue == blueValue) || (redValue==0 && greenValue==0 && blueValue==0) ){
-    redValue = (redValue+1)%2;
-    greenValue = (greenValue+1)%2;
-    blueValue = (blueValue+1)%2;
+    do{
+    redValue = round(random(0,1));
+    greenValue = round(random(0,1));
+    blueValue = round(random(0,1));
+    }while(pred == redValue && pgreen == greenValue && pblue == blueValue);
   }
+  
   pred = redValue;
   pgreen = greenValue;
   pblue = blueValue;
