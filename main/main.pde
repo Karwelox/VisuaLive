@@ -49,6 +49,10 @@ int sizeMotionValues=20;
 float sumMotion=0;    
 float maxMotion=0.01;
 int fullMotionValue = 100;
+
+int pred = 0;
+int pgreen = 0;
+int pblue = 0;
   
 ArrayList<Integer> arrayVelocity ;
 int sizeArrayVelocity = 40;
@@ -125,9 +129,9 @@ String ipTextJuce;
 
 void setup() {
   //size(300,300);
-  //fullScreen(P3D);
+  fullScreen(P3D);
   background(0);
-  size(1280,720,P3D);
+  //size(1280,720,P3D);
   firstVisual = new FirstVisual();
   secondVisual = new SecondVisual();
   thirdVisual = new ThirdVisual();
@@ -144,8 +148,9 @@ void setup() {
   frameRate(60);
   smooth();
   
-  backgroundImage = loadImage("back.jpg");
-  backgroundRain = loadImage("tumblerino2.jpg");
+  //Inserisci FS.jpg per il fullscreen
+  backgroundImage = loadImage("backFS.jpg");
+  backgroundRain = loadImage("tumblerino2FS.jpg");
   
   cp5 = new ControlP5(this);
   cp5.setAutoDraw(false);
@@ -568,8 +573,20 @@ void sendOSCMessageColor(){
   int greenValue = round(random(0,1));
   int blueValue = round(random(0,1));
   
+  //Controllo msg consecutivi uguali o RGB 0,0,0 da evitare
+  if((pred == redValue && pgreen == greenValue && pblue == blueValue) || (redValue==0 && greenValue==0 && blueValue==0) ){
+    redValue = (redValue+1)%2;
+    greenValue = (greenValue+1)%2;
+    blueValue = (blueValue+1)%2;
+  }
+  pred = redValue;
+  pgreen = greenValue;
+  pblue = blueValue;
+  
+  /*
   if(redValue==0 && greenValue==0 && blueValue==0)      //per non avere tutti 0, sennò la grafica su touch è scura
     greenValue=1;
+  */
   
   redMessage.add(redValue);
   greenMessage.add(greenValue);
