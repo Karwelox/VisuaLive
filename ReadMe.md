@@ -101,6 +101,7 @@ The next selected visual will be selected randomly from the set of visuals.<br>
 
 # JUCE
 
+<p align="center"> <img width="600" height="335" src="images/pluginGIF.gif" > </p>
 
 The plugin is realized with Juce, a C++ application framework.<br>
 This plugin was realized to automate the control of the lighting of an architectural structure composed by LED stripes in a dynamic and smart way, during an electronic music show. The idea was to create a beat detector algorithm in order to trigger a certain light pattern, modifying the parameter of this pattern using other audio features.<br>
