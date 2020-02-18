@@ -676,7 +676,7 @@ void keyPressed(){
       playButton.show();   //mostro il bottone
   }
   
-  else if(key == 'm' && currentVisual!=0){    //premo esc se voglio tornare al menù di partenza
+  else if((key == 'm' || key=='M') && currentVisual!=0){    //premo esc se voglio tornare al menù di partenza
 
       manualMode=!manualMode;
   }
@@ -744,7 +744,14 @@ void drawPanel(){
   noStroke();
   
   if(manualMode){
-    text("M", 34, 140);
+    fill(0, 102, 153);
+    String s = "M";
+    text(s, 34, 140);
+  }
+  else{
+    fill(0, 102, 153);
+    String s = "";
+    text(s, 34, 140);
   }
   popMatrix();
 }
