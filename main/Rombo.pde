@@ -10,12 +10,12 @@ class Rombo{
   
   void drawRombo(){
     if(colored==true){
-      fill(255); //triangolo superiore
+      fill(150+(150*currentCentroid), 200, 200); //triangolo superiore
       //stroke(0);
       //strokeWeight(2);
       //triangle(-altezza/4,0,altezza/4,0,0,-altezza);
       triangle(-altezza/3,shift,altezza/3,shift,0,-altezza+shift);
-      fill(60);  //triangolo inferiore
+      fill(150+(150*currentCentroid), 200, 60);  //triangolo inferiore
       //stroke(0);
       //strokeWeight(2);
       //triangle(-altezza/4,0,altezza/4,0,0,altezza);

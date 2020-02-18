@@ -47,7 +47,7 @@ void drawVisual(){
   background(0);
   
   
-  
+  colorMode(HSB,255);
   translate(width/2, height*2/3);
   noStroke();
   this.maxAlt=0;
@@ -76,7 +76,7 @@ void drawVisual(){
   }
   
   //rombi.get(max).altezza+=vel;
-  rombi.get(max).altezza+=(detection_bpm)*((averageMotion+0.01)*10);
+  rombi.get(max).altezza+=(detection_bpm)*((averageMotion+0.01)*5);
   
   for (int i=0;i<rombi.size()-1;i++){  //serve a trovare cambiare grandezze cerchi
     
