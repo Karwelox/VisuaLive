@@ -66,10 +66,10 @@ The scheduler chooses the visual art to show, according to the BPM detected by t
 
 The main menu has a simple interface. <br>
 You can insert the IP of the computer that run Processing and TouchDesigner sketch in the proper text field. </p>
-There is a PLAY button. If it is clicked, Processing will start drawing one of the visuals, selected randomly, and it starts the connection.
-If you click the key “TAB” when Processing is drawing a visual, you can come back to the menu.
-If you click the key "ENTER", the system will start drawing the next saved visual art.
-If you click the key "m", the system switches to manual mode. It won't change the actual graphic even if it will be detected a new BPM.
+There is a PLAY button. If it is clicked, Processing will start drawing one of the visuals, selected randomly, and it starts the connection.<br>
+If you click the key “TAB” when Processing is drawing a visual, you can come back to the menu.<br>
+If you click the key "ENTER", the system will start drawing the next saved visual art.<br>
+If you click the key "m", the system switches to manual mode. It won't change the actual graphic even if it will be detected a new BPM.<br>
 
 ## Scheduler Algorithm:
 
