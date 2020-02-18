@@ -757,9 +757,20 @@ void drawPanel(){
   noStroke();
   
   if(manualMode){
+<<<<<<< HEAD
     fill(150);
     String s = "M";
     text(s, 34, 140);
+=======
+    fill(0, 102, 153);
+    String s = "M";
+    text(s, 34, 140);
+  }
+  else{
+    fill(0, 102, 153);
+    String s = "";
+    text(s, 34, 140);
+>>>>>>> a6cd20cbe0bdb7e665ba7d6bc5948872f6106cd0
   }
   else{
 
