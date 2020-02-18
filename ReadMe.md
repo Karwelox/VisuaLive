@@ -66,12 +66,10 @@ The scheduler chooses the visual art to show, according to the BPM detected by t
 
 The main menu has a simple interface. <br>
 You can insert the IP of the computer that run Processing and TouchDesigner sketch in the proper text field. </p>
-There is a PLAY button. If it is clicked, Processing will start drawing one of the visuals, selected randomly, and it starts the connection.
-<p align="center"> <img width="121" height="56" src="images/play.jpg" > </p>
-If you click the key “TAB” when Processing is drawing a visual, you can come back to the menu.
-<p align="center"> <img width="155" height="103" src="images/tab.jpg" > </p>
-If you click the key "ENTER", the system will start drawing the next saved visual art.
-If you click the key "m", the system switches to manual mode. It won't change the actual graphic even if it will be detected a new BPM.
+There is a PLAY button. If it is clicked, Processing will start drawing one of the visuals, selected randomly, and it starts the connection.<br>
+If you click the key “TAB” when Processing is drawing a visual, you can come back to the menu.<br>
+If you click the key "ENTER", the system will start drawing the next saved visual art.<br>
+If you click the key "m", the system switches to manual mode. It won't change the actual graphic even if it will be detected a new BPM.<br>
 
 ## Scheduler Algorithm:
 
@@ -115,11 +113,22 @@ It analyzes the song played in real time and it calculates:<br>
 4. Panning value<br>
 5. BPM value.<br>
 
+## Beat detection algorithm
+
+The beat tracking algorithm is mainly based on a statistical model which uses the energy content of the audio signal. <br>
+
+The algorithm calculates the energy content of 1024 consecutive samples of the audio source, extracted with a rectangular window with no overlap, in the following ranges:
+60 - 130 Hz : energy content of kick <br>
+300 - 750 Hz : energy content of snare. <br>
+
+For every 1024-samples frame we calculate the energy associated. Since we are analyzing 1024 samples of audio, to take 1 second history we need to store 43 blocks in an array and then calculate the average energy for that second. Then, every 1024 samples a threshold is calculated based on the variance of the "history energy array" calculated before and that is updated every 1024 samples to improve the real-time performances. If the difference of energy pass that certain threshold we can say there is a beat. <br>
+
 
 ## BPM detection algorithm
 
 
-The algorithm is a real-time estimate of the current played song. It is optimized for electronic music with the presence of a drum pattern composed mainly by a kick and a snare. It is base on the beat detection algorithm.<br>
+The algorithm is used to obtain a real-time estimate of the current played song. <br>
+It is optimized for electronic music with the presence of a drum pattern composed mainly by a kick and a snare. It is base on the beat detection algorithm.<br>
 The bpm calculated is an estimate of the actual BPM value of the song. <br>
 We use this value as a mathematical estimate to understand what kind of song the artist is playing, and to trigger to proper abstract graphic to show.<br>
 
@@ -130,7 +139,7 @@ If the queue is full, It calculates the variance of the distance of the times.<b
 If the variance is under a certain threshold, we calculate the BPM as : sum of the delta times of the queue / size of the queue. <br>
 The bpm values is updated, unless it is similar to the previous BPM value detected. <br><br>
 
-
+If no beats are detected for a pre defined amount of seconds (3), the variance threshold is set to a high value, so the system can update the calculation of the estimate of the bpm.
 
 
 # TOUCHDESIGNER
