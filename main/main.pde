@@ -9,7 +9,7 @@ import peasy.*;
 PeasyCam cam;
 ControlP5 cp5;
 
-final float timeToWaitOtherBPM = 3.5;    //tempo in secondi dopo il quale è possibile cambiare visual
+final float timeToWaitOtherBPM = 4.5;    //tempo in secondi dopo il quale è possibile cambiare visual
 
 int currentVisual = 0; //indica la visual attuale
 int prevVisual = 0;
@@ -130,6 +130,8 @@ JSONArray rangeBPMValuesJSON;
 int numRanges = 5;
 int[][] rangeBPMMatrix = new int[numRanges][2];
 
+PGraphics pGraphic;
+
 
 void setup() {
   //size(300,300);
@@ -209,6 +211,8 @@ void setup() {
   for (int i = 0; i < rangeBPMValuesJSON.size(); i++){
     println(rangeBPMMatrix[i][0] + "  " + rangeBPMMatrix[i][1]);
   }
+  
+  pGraphic = createGraphics(60, 150, P3D);
   
 }
 
@@ -606,7 +610,7 @@ void sendOSCMessageColor(){
     redValue = round(random(0,1));
     greenValue = round(random(0,1));
     blueValue = round(random(0,1));
-    }while(pred == redValue && pgreen == greenValue && pblue == blueValue);
+    }while((pred == redValue && pgreen == greenValue && pblue == blueValue) || (redValue==0 && greenValue==0 && blueValue==0) );
   }
   
   pred = redValue;
@@ -676,7 +680,7 @@ void keyPressed(){
       playButton.show();   //mostro il bottone
   }
   
-  else if(key == 'm' && currentVisual!=0){    //premo esc se voglio tornare al menù di partenza
+  else if((key == 'm' || key=='M') && currentVisual!=0){    //premo esc se voglio tornare al menù di partenza
 
       manualMode=!manualMode;
   }
@@ -726,27 +730,47 @@ void handleTransition(int velocity_detected){
 
 //funzione che disegna il pannello di riempimento
 void drawPanel(){
+  
+  
   //noStroke();
   pushMatrix();
+  pGraphic.beginDraw();
+  if(currentVisual==6){
+    pGraphic.background(0, 255);
+  }
+  else 
+  pGraphic.background(0, 0);
+  
   translate(0,0);
   colorMode(RGB);
-  stroke(255);
+  stroke(150);
   strokeWeight(1);
   
   noFill();
   rect(10, 10, 30, 100);   //primo rect di contenimento
   
   
-  color colorProva = color(255,255,255);
+  color colorProva = color(150);
   //stroke(255); 
   fill(colorProva, 200);
   rect(10, 10, 30, this.sumMotion);
   noStroke();
   
   if(manualMode){
-    text("M", 34, 140);
+    fill(150);
+    String s = "M";
+    text(s, 34, 140);
   }
+  else{
+
+    String s = "";
+    text(s, 34, 140);
+  }
+  pGraphic.endDraw();
   popMatrix();
+  
+  image(pGraphic, 0, 0); 
+  
 }
 
 

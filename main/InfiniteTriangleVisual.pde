@@ -46,7 +46,7 @@ void drawVisual(){
   
   background(0);
   
-  drawPanel();
+  
   
   translate(width/2, height*2/3);
   noStroke();
@@ -95,6 +95,9 @@ void drawVisual(){
     rombi.get(max).altezza=1;
     //rombi.get(max).altezza=valAlt;     //valMag contiene il valore dell'oggetto più piccolo
   }
+  
+  translate(-width/2, -height*2/3);
+  drawPanel();
   
 }
 }

@@ -10,7 +10,7 @@ boolean stopDrawFlag = true;
 
 void drawVisual() {
   
-
+  drawPanel();
   
   if(toggle_beat && stopDrawFlag==true){
     symmetry = (2*(round(random(3,6))));
@@ -23,7 +23,7 @@ void drawVisual() {
     stopDrawFlag=true;
  
  
-  drawPanel();
+  
   
   translate(width / 2, height / 2);
   float pCentroid = map(prev_centroid, -1, 1, 0, width);

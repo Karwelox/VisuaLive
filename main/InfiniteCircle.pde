@@ -82,7 +82,7 @@ void drawVisual(){
   
   background(0);
   
-  drawPanel();
+  
   
   translate(width/2, height/2);
   
@@ -119,7 +119,7 @@ void drawVisual(){
   }
 
   
-  if(circles.get(max).asseMag>=width*5 || localFlag!=toggle_beat){  //quando il cerchio diventa grande
+  if(circles.get(max).asseMag>=width*5 || (localFlag!=toggle_beat && circles.get(max).asseMag>=width*2.5)){  //quando il cerchio diventa grande
     if (actual+divNum>=255){
       augm=false;
       circles.get(max).col=actual-divNum;
@@ -147,8 +147,8 @@ void drawVisual(){
     
   }
   
-  
-  
+  translate(-width/2, -height/2);
+  drawPanel();
   
 }
 
