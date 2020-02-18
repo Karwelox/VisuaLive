@@ -1,5 +1,5 @@
 ﻿# VISUALIVE <br>
- <p align="center"> <img width="600" height="346" src="images/MainMenuGIF.gif" > </p>
+
 
 ## What is VisuaLive
  
@@ -53,6 +53,7 @@ SoundSwitch<br>
 
 # Processing
 
+ <p align="center"> <img width="600" height="346" src="images/MainMenuGIF.gif" > </p>
 
 The processing sketch is composed of a set of visual arts and a scheduler.<br>
 The sketches of the visuals are written by the authors. Each visual has some parameters controlled by the audio features extracted by the JUCE’s plugin, and others controlled by the amount of motion detected by the TouchDesigner camera.<br>
@@ -107,11 +108,11 @@ You can see how it works in detail at the following link: https://github.com/Kar
 
 
 It analyzes the song played in real time and it calculates:<br>
-1. Beat detection<br>
-2. Spectral centroid<br>
-3. Amount of energy<br>
-4. Panning value<br>
-5. BPM value.<br>
+1. Beat detection: to obtain a rhythmic control of the visuals<br>
+2. Spectral centroid: we gave a visual representation of the spectral centroid because is a good predictor of the “brightness” of a sound. In some visual the brightness of colours change in real-time with a scaled version of the spectral centroid and in others the vertical creation of particles depends on it. <br>
+3. Amount of energy: it is calculated considering the audio energy content in the low-frequency band in order to enhance the beat effect. The value is converted in the log-frequency scale to represent the frequency band distribution that are present in the human ear system. <br>
+4. Panning value: Average energy content within each channel (Left and Right) to determine whether the signal is more present in one side with respect to the other. <br>
+5. BPM value: to change the current visual.<br>
 
 ## Beat detection algorithm
 
