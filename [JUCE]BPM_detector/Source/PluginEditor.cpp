@@ -424,12 +424,26 @@ void PluginEditor::BPMDetection(double timeNow)
 
 		if (numBeat >= numBeatSize)
 		{
+               //nuova variabile
+            int roundedIndexNewQueue = countNewQueue%numComparisonBeatSize;   //perchè voglio avere nuove code ogni beatSize
+            
+            createComparisonBPMQueue(timeNow, roundedIndexNewQueue, deltaT);
+            
+            countNewQueue++;
+            
+            
+            
 			double av = BPMsum / (numBeatSize);
 			var = BPMsumq / (numBeatSize) - (av * av);
 			//double var = BPMsumq / (numBeatSize-1) + (av * av * numBeatSize) / (numBeatSize - 1) - (2 * av * BPMsum) / (numBeatSize - 1);
-
+            
+            
+            
+            
+            
 			if (var < varianceBeat)
 			{
+                
                 prevBPM = BPM;
                 
                 int calcolusBPM = round(60 / av);
@@ -438,24 +452,28 @@ void PluginEditor::BPMDetection(double timeNow)
                 maxVelocity = std::numeric_limits<float>::min();
                 
                 
-                if(calcolusBPM>prevBPM+2 || calcolusBPM<prevBPM-2){   //controllo per evitare di avere variazioni minime di calcolo di BPM
+                if(calcolusBPM>prevBPM+bpmOffsetValue || calcolusBPM<prevBPM-bpmOffsetValue){   //controllo per evitare di avere variazioni minime di calcolo di BPM
                     BPM = calcolusBPM;
-                    printf("\nUPDATE!! ActualBPM = %d  |  PrevBPM = %d", prevBPM, BPM);
+                    //printf("\nUPDATE!! ActualBPM = %d  |  PrevBPM = %d", prevBPM, BPM);
+                
                     
-
                     if(connectedOSC){
-                    if (! oscSender.send ("/juce/bpm", BPM)) // [5]
-                        showConnectionErrorMessage ("Error: could not send OSC message.");
+                        if (! oscSender.send ("/juce/bpm", BPM)) // [5]
+                            showConnectionErrorMessage ("Error: could not send OSC message.");
+                        }
+                    
+                    varianceBeat = var;
+                    actualBPM.setText("BPM: " + (String)BPM);
+                    
+                    printf("\nCODA SUPREMA. BPM attuale: %d  || Varianza attuale: %f", BPM, var);
+                    
+                }
+                
+            else{
+                        //printf("\nNO update! ActualBPM = %d  |  PrevBPM = %d", prevBPM, BPM);
                     }
-                }
                 
-                else{
-                    printf("\nNO update! ActualBPM = %d  |  PrevBPM = %d", prevBPM, BPM);
-                }
-                
-				varianceBeat = var;
-				actualBPM.setText("BPM: " + (String)BPM);
-                
+				
                 
                 
 			}
@@ -474,8 +492,9 @@ void PluginEditor::BPMDetection(double timeNow)
 			BPMsumq = BPMsumq - (deltaTQueue.front() * deltaTQueue.front());
 			deltaTQueue.pop();
 			numBeat--;
+
 		}
-	}
+	}//fine caso fuori dal transient iniziale
 }
 
 void PluginEditor::manualBPM()
@@ -639,11 +658,11 @@ void PluginEditor::drawNextLineOfSpectrogram()
     
     double time_now = Time::getMillisecondCounterHiRes() * 0.001;
     
-    //AGGIORNO IL CALCOLO DEL BPM SE NON ARRIVA UN BEAT ENTRO 5 SECONDI
+    //AGGIORNO IL CALCOLO DEL BPM SE NON ARRIVA UN BEAT ENTRO secondsBeforeRefreshBPM SECONDI
     if(time_now-prev_time_bpm>secondsBeforeRefreshBPM){     //secondsBeforeRefreshBPM è il num di secondi di attesa se non arriva un beat allora refresho
-        printf("%f  -   %f\n", time_now,prev_time_bpm);
+        //printf("%f  -   %f\n", time_now,prev_time_bpm);
         prev_time_bpm = time_now;
-        refreshBPMcalculation();
+        //refreshBPMcalculation();
         
         countBPMRefresh++;
     }
@@ -826,115 +845,7 @@ void PluginEditor::designLightPattern()
 
 	spectralRangeMin = -3.5;
 
-    /*if(panFeature.panValue<-0.5) //caso left
-    {
-        if(spectralCentroid.centroidL < -3.5)
-        {
-            setNoteNumber(1, rand()%100);
-        }
-        
-        else if(spectralCentroid.centroidL>=-3.5 && spectralCentroid.centroidL<-2.5)
-        {
-            setNoteNumber(2, rand()%100);
-        }
-        
-        else if(spectralCentroid.centroidL>=-2.5 && spectralCentroid.centroidL<-1.5)
-        {
-            setNoteNumber(3, rand()%100);
-        }
-        
-        else if(spectralCentroid.centroidL>=-1.5 && spectralCentroid.centroidL<-0.5)
-        {
-            setNoteNumber(4, rand()%100);
-        }
-        else if(spectralCentroid.centroidL>=-0.5 && spectralCentroid.centroidL<0.5)
-        {
-            setNoteNumber(5, rand()%100);
-        }
-        
-        else if(spectralCentroid.centroidL>=0.5 && spectralCentroid.centroidL<1.5)
-        {
-            setNoteNumber(6, rand()%100);
-        }
-        else if(spectralCentroid.centroidL>1.5)
-        {
-            setNoteNumber(7, rand()%100);
-        }
-    }
     
-    else if(panFeature.panValue>=-0.5 && panFeature.panValue<0.5)
-    {
-        if(spectralCentroid.centroidMid<-3.5)
-        {
-            setNoteNumber(8, rand()%100);
-        }
-        
-        else if(spectralCentroid.centroidMid>=-3.5 && spectralCentroid.centroidMid<-2.5)
-        {
-            setNoteNumber(9, rand()%100);
-        }
-        
-        else if(spectralCentroid.centroidMid>=-2.5 && spectralCentroid.centroidMid<-1.5)
-        {
-            setNoteNumber(10, rand()%100);
-        }
-        
-        else if(spectralCentroid.centroidMid>=-1.5 && spectralCentroid.centroidMid<-0.5)
-        {
-            setNoteNumber(11, rand()%100);
-        }
-        else if(spectralCentroid.centroidMid>=-0.5 && spectralCentroid.centroidMid<0.5)
-        {
-            setNoteNumber(12, rand()%100);
-        }
-        
-        else if(spectralCentroid.centroidMid>=0.5 && spectralCentroid.centroidMid<1.5)
-        {
-            setNoteNumber(13, rand()%100);
-        }
-        else if(spectralCentroid.centroidMid>=1.5)
-        {
-            setNoteNumber(14, rand()%100);
-        }
-        
-    }
-    
-    else if(panFeature.panValue>=0.5)
-    {
-        if(spectralCentroid.centroidR<-3.5)
-        {
-            setNoteNumber(15, rand()%100);
-        }
-        
-        else if(spectralCentroid.centroidR>=-3.5 && spectralCentroid.centroidR<-2.5)
-        {
-            setNoteNumber(16, rand()%100);
-        }
-        
-        else if(spectralCentroid.centroidR>=-2.5 && spectralCentroid.centroidR<-1.5)
-        {
-            setNoteNumber(17, rand()%100);
-        }
-        
-        else if(spectralCentroid.centroidR>=-1.5 && spectralCentroid.centroidR<-0.5)
-        {
-            setNoteNumber(18, rand()%100);
-        }
-        else if(spectralCentroid.centroidR>=-0.5 && spectralCentroid.centroidR<0.5)
-        {
-            setNoteNumber(19, rand()%100);
-        }
-        
-        else if(spectralCentroid.centroidR>=0.5 && spectralCentroid.centroidR<1.5)
-        {
-            setNoteNumber(20, rand()%100);
-        }
-        else if(spectralCentroid.centroidR>=1.5)
-        {
-            setNoteNumber(21, rand()%100);
-        }
-        
-    }*/
     
 	panCount.setText("Panning: " + (String)panFeature.panValue);
 	spectralCount.setText("SpectralCentroidMid: " + (String)spectralCentroid.centroidMid);
@@ -1003,3 +914,89 @@ void PluginEditor::changeProcessingIPAddress(){
     connectedOSC = true;
 }
 
+
+
+
+void PluginEditor::createComparisonBPMQueue(double timeNow, int roundedIndexNewQueue, double deltaT){
+    
+    
+    if (roundedIndexNewQueue<numComparisonBeatSize-1){   //caso in cui sto ricreando una coda temporanea
+        
+        comparisonDeltaTQueue.push(timeNow);
+        comparisonBPMsum = BPMsum + deltaT;
+        comparisonBPMsumq = BPMsumq + (deltaT * deltaT);
+        comparisonAv = BPMsum / (numBeatSize);
+        comparisonVar = BPMsumq / (numBeatSize) - (comparisonAv * comparisonAv);
+        //printf("\nDIM attuale: %d", comparisonDeltaTQueue.size());
+    }
+    
+    
+    else{  //caso in cui inizializzo la nuova coda
+        //CONFRONTO
+        int comparisonBPM = round(60 / comparisonAv);
+        
+        
+        //printf("\nBPM attuale: %d  || Varianza attuale: %f", comparisonBPM, comparisonVar);
+        
+        //se la varianza della coda attuale è minore di una soglia predefinita:
+        //1) aggiorno la varianza minima del sistema
+        //2) aggiorno il valore del bpm
+        if((comparisonVar < 0.001  && (comparisonBPM>prevBPM+bpmOffsetValue || comparisonBPM<prevBPM-bpmOffsetValue))
+           || (comparisonVar < 0.0025  && (comparisonBPM>prevBPM+bpmOffsetValue+3 || comparisonBPM<prevBPM-bpmOffsetValue-3))
+           )
+        {
+
+            
+            
+            
+            if(comparisonVar < 0.001  && (comparisonBPM>prevBPM+bpmOffsetValue || comparisonBPM<prevBPM-bpmOffsetValue)){
+                printf("\nCASO 1: BPM attuale: %d  || Varianza attuale: %f", comparisonBPM, comparisonVar);
+            }
+            if(comparisonVar < 0.0025  && (comparisonBPM>prevBPM+bpmOffsetValue+3 || comparisonBPM<prevBPM-bpmOffsetValue-3)){
+                printf("\nCASO 2: BPM attuale: %d  || Varianza attuale: %f", comparisonBPM, comparisonVar);
+            }
+            
+            
+            
+            prevBPM = BPM;
+            BPM = comparisonBPM;
+            
+           
+            
+        
+            
+            //printf("\nBPM attuale: %d  || Varianza attuale: %f", comparisonBPM, comparisonVar);
+            varianceBeat = 0.001;
+            actualBPM.setText("BPM: " + (String)BPM);
+            
+            if(connectedOSC){
+                if (! oscSender.send ("/juce/bpm", BPM)) // [5]
+                    showConnectionErrorMessage ("Error: could not send OSC message.");
+            }
+            
+               
+        }
+        
+        
+        
+        //poi ricreo la coda
+        
+        while(!comparisonDeltaTQueue.empty()) {
+            comparisonDeltaTQueue.pop();
+        }
+        comparisonBPMsum = 0;
+        comparisonBPMsumq = 0;
+        comparisonAv = 0;
+        comparisonVar = 0;
+        //printf("\nRICREO: %d", comparisonDeltaTQueue.size());
+        
+        //metto il primo valore della nuova coda
+        comparisonDeltaTQueue.push(timeNow);
+        
+        //printf("\nDIM attuale: %d", comparisonDeltaTQueue.size());
+    }
+    
+    
+    
+    
+}

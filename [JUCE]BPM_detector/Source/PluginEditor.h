@@ -109,7 +109,7 @@ private:
     
 	double BPMsum = 0;
 	double BPMsumq = 0;
-	double varianceBeat = 50; //alta all'inizio
+	double varianceBeat = 0.01; 
 	int numBeat = 0;
 	int numBeatSize = 10;
     int BPM = 0;
@@ -132,7 +132,7 @@ private:
 	Slider midiChannelSelector;
 	
 	Slider bpmMaxSelector;
-	float bpmMax = 200;
+	float bpmMax = 180;
 
 	Slider numAnimSelector;
 	float numAnimazioni = 7;
@@ -162,7 +162,21 @@ private:
     float secondsBeforeRefreshBPM = 3;
     
     float prev_time_bpm=0;   //var usata per fare il check se non mando nuovi bpm entro un certo tempo
-    
     void changeProcessingIPAddress();
+    
+    
+    float prevMinimumVar = 50;
+    int countNewQueue = 0;
+    void createComparisonBPMQueue(double timeNow, int roundedIndexNewQueue, double deltaT);
+    std::queue<double> comparisonDeltaTQueue;
+    double comparisonBPMsum = 0;
+    double comparisonBPMsumq = 0;
+    double comparisonVar = 0;
+    double comparisonAv = 0;
+    
+    int numComparisonBeatSize = 5;
+    
+    int bpmOffsetValue = 3;
+    
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginEditor)
 };
