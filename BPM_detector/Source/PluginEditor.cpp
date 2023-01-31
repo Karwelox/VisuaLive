@@ -189,9 +189,9 @@ PluginEditor::~PluginEditor()
 //==============================================================================
 void PluginEditor::paint(juce::Graphics& g)
 {
-	//g.fillAll(Colours::black);
-	//g.setOpacity(1.0f);
-	//g.drawImage(spectrogramImage, getLocalBounds().toFloat());
+	g.fillAll(juce::Colours::black);
+	g.setOpacity(1.0f);
+	g.drawImage(spectrogramImage, getLocalBounds().toFloat());
 
 }
 
@@ -596,10 +596,11 @@ void PluginEditor::drawNextLineOfSpectrogram()
         
 	}
     
-    //printf("\n\n");
+    
     
 	auto maxLevel = juce::FloatVectorOperations::findMinAndMax(processor.newFftData, processor.fftSize / 2); // [3]
 	
+    //Fill spectrogram image
 	for (auto y = 1; y < imageHeight; ++y)                                                            // [4]
 	{
 		auto skewedProportionY = 1.0f - std::exp(std::log(y / (float)imageHeight) * 0.2f);
