@@ -152,38 +152,14 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiB
 	for (int channel = 0; channel < totalNumInputChannels; ++channel)
 	{
         
-		auto* channelData = buffer.getReadPointer(channel);
+		auto* channelData = buffer.getReadPointer(channel);     //to read input samples
         
 		for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
 		{
-			
-            //if(channel==0){
-            //    leftChannel[sample] = buffer.getSample(0, sample);
-            //}
-            
-            //if(channel==1){
-                //rightChannel[sample] = buffer.getSample(1, sample);
-                //
-                //totChannel[sample] = (leftChannel[sample])*(leftChannel[sample]) + (rightChannel[sample]*rightChannel[sample]);
-
-
-                    pushNextSampleIntoFifo(channelData[sample], channel);
-            //}
-			//channelData[sample] = buffer.getSample(channel, sample) * rawVolume;
-           
-            
-            
-      
-
-
+            pushNextSampleIntoFifo(channelData[sample], channel);
 
 		}
-
-
-
-
 	}
-
 
 }
 
@@ -227,7 +203,7 @@ void PluginProcessor::pushNextSampleIntoFifo(float sample, int channel) noexcept
 {
     //std::cout << "1__fft ready? " << nextFFTBlockReady << std::endl;
     
-	if (channel == 0)
+	if (channel == 0)       //left channel
 	{
 		if (fifoIndexL == fftSize)    // [8]
 		{
@@ -241,7 +217,7 @@ void PluginProcessor::pushNextSampleIntoFifo(float sample, int channel) noexcept
 		}
 		fifoL[fifoIndexL++] = sample;  // [9]
 	}
-	else if(channel == 1)
+	else if(channel == 1)       //right channel
 	{
 		if (fifoIndexR == fftSize)    // [8]
 		{

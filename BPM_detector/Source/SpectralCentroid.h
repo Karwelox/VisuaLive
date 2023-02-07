@@ -15,6 +15,12 @@
 
 #include <queue>
 
+/*
+ The spectral centroid is a measure used in digital signal processing to characterise a spectrum.
+ It indicates where the center of mass of the spectrum is located.
+ Perceptually, it has a robust connection with the impression of brightness of a sound.
+ */
+
 //==============================================================================
 /*
 */
@@ -69,7 +75,7 @@ private:
     std::queue<float> temporalCentroidQueue;
     
     
-    int queueSize = 20;
+    int queueSize = 43;     //amout of centroid values to average to give the final result
     
     void fillCentroidQueue(float);
     

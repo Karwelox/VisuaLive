@@ -44,7 +44,7 @@ void PanFeature::run()
 
 void PanFeature::panFeatureFunction()
 {
-    
+
     int panLeft = 0, panRight = 0;
     
     for (int i = 0; i < processor.fftSize / 2; i++)
@@ -57,13 +57,35 @@ void PanFeature::panFeatureFunction()
         {
             panRight++;
         }
-        
+     
+    }
+    float currPanValue = (float)(panRight - panLeft)/ (PluginProcessor::fftSize / 2);
+    
+    //calculate average Panning
+    if(panQueue.size()<queueSize){
+        panQueue.push(currPanValue);
     }
     
-    panValue = (float)(panRight - panLeft)/ (PluginProcessor::fftSize / 2);
+    else{
+        panQueue.pop();
+        panQueue.push(currPanValue);
+        calculateAveragePan();
+    }
     
+}
+
+void PanFeature::calculateAveragePan(){
     
-    //sendChangeMessage();
-    //panCount.setText("L: " + (String)panLeft + " - R: " + (String)panRight);
-    //printf("\n%d", count);
+    float val=0, sum=0;
+    
+    std::queue<float> tempQueue = panQueue;
+
+    while(tempQueue.size() > 0)
+    {
+        val = tempQueue.front();
+        sum = sum + val;
+        tempQueue.pop();
+    }
+
+    panValue = sum / queueSize;
 }

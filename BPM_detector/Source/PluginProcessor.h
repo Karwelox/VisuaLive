@@ -94,6 +94,7 @@ public:
     float newFftData[fftSize*2];
     
     
+    
 private:
 	double rawVolume = 1;
 	double threshold;

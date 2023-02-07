@@ -30,6 +30,7 @@ public:
     void resized() override;
     void run() override;
     void panFeatureFunction();
+    void calculateAveragePan();
     
     
     float panValue = 0;
@@ -39,5 +40,8 @@ private:
     
     PluginProcessor& processor;
     
+    std::queue<float> panQueue;
+    
+    int queueSize = 43;     //amout of centroid values to average to give the final result
 
 };

@@ -62,7 +62,7 @@ void SpectralCentroid::spectralCentroid(){
         //processor.fftData[i] = ( processor.fftDataL[i] + processor.fftDataR[i] + 0.0000001) / 2;  //offset per evitare divisione per 0
         sumOfSpectrum += processor.newFftData[i];
         
-        centroid += processor.freqs[i] * processor.newFftData[i];
+        centroid += processor.freqs[i] * processor.newFftData[i];       //frequency corresponding to the fft sample * magnitude of the fft sample.
     }
     
     centroid = (centroid+0.001)/(sumOfSpectrum+0.001);   //offset per evitare nan o inf

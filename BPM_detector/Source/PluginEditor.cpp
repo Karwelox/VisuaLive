@@ -346,27 +346,32 @@ void PluginEditor::setNoteNumber(int faderNumber, int velocity)
 			message = juce::MidiMessage::controllerEvent(midiChannel, lightNumber, velocity);
 			message.setTimeStamp(timeNow - startTime);
             
+            //________________________________________________________________________//
+            //send MIDI value
             //Problem! Handle midiOutput
 			//midiOutput->sendMessageNow(message);
             
-			addMessageToList(message);  //print message on canvas
-			
+            //________________________________________________________________________//
             
+            //send OSC value to the destination IP if the connection is enstabilished
             if(connectedOSC){
-            if (! oscSender.send ("/juce/beat", (float)1)){ // [5]
-                showConnectionErrorMessage ("Error: could not send OSC message.");
+                if (! oscSender.send ("/juce/beat", (float)1)){ // [5]
+                    showConnectionErrorMessage ("Error: could not send OSC message.");
+                }
+                
+                if (! oscSender.send ("/juce/panning", panFeature.panValue)){ // [5]
+                    showConnectionErrorMessage ("Error: could not send OSC message.");
+                }
+                
+                if (! oscSender.send ("/juce/panning", panFeature.panValue)){ // [5]
+                    showConnectionErrorMessage ("Error: could not send OSC message.");
+                }
             }
-            }
-            //invio del valore di panning
-            /*if (! oscSender.send ("/juce/panning", panFeature.panValue)) // [5]
-                showConnectionErrorMessage ("Error: could not send OSC message.");*/
             
-            if(connectedOSC){
-            if (! oscSender.send ("/juce/panning", panFeature.panValue)){ // [5]
-                showConnectionErrorMessage ("Error: could not send OSC message.");
+            //________________________________________________________________________//
+            
+            addMessageToList(message);  //print message on canvas
 
-            }
-            }
             countBPMRefresh=1;   //restart counter bpm refresh
             
 		}
@@ -537,11 +542,14 @@ void PluginEditor::addMessageToList(const juce::MidiMessage& message)
 		seconds,
 		millis);
     
+    /*
+	//if (lightNumber < 10)
+		//logMessage(timecode + " - |0" + (juce::String)lightNumber + "|" + " " + getMidiMessageDescription(message));
+	//else
+		//logMessage(timecode + " - |" + (juce::String)lightNumber + "|" + " " + getMidiMessageDescription(message));
+    */
     
-	if (lightNumber < 10)
-		logMessage(timecode + " - |0" + (juce::String)lightNumber + "|" + " " + getMidiMessageDescription(message));
-	else
-		logMessage(timecode + " - |" + (juce::String)lightNumber + "|" + " " + getMidiMessageDescription(message));
+    logMessage(timecode + " - | Beat Detected | Triggered light pattern: " + (juce::String)lightNumber);
      
 
 }
