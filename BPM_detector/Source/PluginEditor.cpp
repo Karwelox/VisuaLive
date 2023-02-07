@@ -133,8 +133,9 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 	//midiMessagesBox.setColour(TextEditor::outlineColourId, Colour(0x1c000000));
 	midiMessagesBox.setColour(juce::TextEditor::shadowColourId, juce::Colour(0x16000000));
 	getLookAndFeel().setColour(juce::ScrollBar::thumbColourId, juce::Colours::greenyellow);
-
-	startTimerHz(60);
+    
+	Timer::startTimerHz(60);     //update timer, used to trigger timerCallback()
+    
 	setSize(860, 450);
 
 	addAndMakeVisible(midiChannelSelector);
@@ -347,7 +348,8 @@ void PluginEditor::setNoteNumber(int faderNumber, int velocity)
             
             //Problem! Handle midiOutput
 			//midiOutput->sendMessageNow(message);
-			addMessageToList(message);
+            
+			addMessageToList(message);  //print message on canvas
 			
             
             if(connectedOSC){
@@ -466,16 +468,7 @@ void PluginEditor::BPMDetection(double timeNow)
                     }
                 
 				
-                
-                
 			}
-            
-            /*countNoUpdateVar++;      //prova per far recepire prima il cambio bpm
-            if (countNoUpdateVar>5){
-                varianceBeat+=0.0001;
-                countNoUpdateVar=0;
-                
-            }*/
             
 			actualVar.setText("actualVar: " + (juce::String)var);
 			minimumVar.setText("minimumVar: " + (juce::String)varianceBeat);
@@ -526,8 +519,11 @@ void PluginEditor::logMessage(const juce::String& m)
 	midiMessagesBox.insertTextAtCaret(m + juce::newLine);
 }
 
+
 void PluginEditor::addMessageToList(const juce::MidiMessage& message)
 {
+    //Function that prints a message int the canvas when a beat is detected
+    
 	auto time = message.getTimeStamp();
 
 	auto hours = ((int)(time / 3600.0)) % 24;
@@ -540,11 +536,14 @@ void PluginEditor::addMessageToList(const juce::MidiMessage& message)
 		minutes,
 		seconds,
 		millis);
-
+    
+    
 	if (lightNumber < 10)
 		logMessage(timecode + " - |0" + (juce::String)lightNumber + "|" + " " + getMidiMessageDescription(message));
 	else
 		logMessage(timecode + " - |" + (juce::String)lightNumber + "|" + " " + getMidiMessageDescription(message));
+     
+
 }
 
 void PluginEditor::sliderValueChanged(juce::Slider * slider)
@@ -589,11 +588,7 @@ void PluginEditor::drawNextLineOfSpectrogram()
     //std::cout << fftData << std::endl;
     
 	for (int i = 0; i <= processor.fftSize / 2; i++) {
-		//fftData[i] = (processor.fftDataL[i] + processor.fftDataR[i])/2;
-        //processor.newFftData[i] = fftData[i];
-        
         processor.newFftData[i] = (processor.fftDataL[i] + processor.fftDataR[i])/2;
-        
 	}
     
     
@@ -622,7 +617,7 @@ void PluginEditor::drawNextLineOfSpectrogram()
     
     
 	//-----FORSE
-	float energySum = beatDetector.performEnergyFFT(2);
+	float energySum = beatDetector.calculateFFTEnergyInRange(2);
     if(connectedOSC)     //solo se effettivamente connetto inizio ad aggiornare l' energia
         setNoteNumber(0, velocityRange(10*log10(1+energySum + std::numeric_limits<float>::epsilon())));
     
@@ -672,7 +667,6 @@ void PluginEditor::timerCallback()
     
 	if (processor.getNextFFTBlockReady())
 	{
-        //Problem to solve.
 		drawNextLineOfSpectrogram();
 		processor.setNextFFTBlockReady(false);
 		repaint();

@@ -15,13 +15,7 @@
 //==============================================================================
 BeatDetector::BeatDetector (PluginProcessor& p): processor(p), juce::Thread("BeatDetectorThread")
 {
-    kickmin = round(60 / dim);
-    kickmax = round(130 / dim);
-    snaremin = round(301 / dim);
-    snaremax = round(750 / dim);
-    bandKick=(kickmax - kickmin) * 2;
-    bandSnare=(snaremax-snaremin) * 2;
-
+    
 }
 
 BeatDetector::~BeatDetector()
@@ -49,8 +43,8 @@ void BeatDetector::beatDetection() {
 
     float energyRange[2];
     
-    energyRange[0] = performEnergyFFT(0);   //calcolo energia del range low-mid del singolo buffer
-    energyRange[1] = performEnergyFFT(1);
+    energyRange[0] = calculateFFTEnergyInRange(0);   //calcolo energia del low range del singolo buffer
+    energyRange[1] = calculateFFTEnergyInRange(1);   //calcolo energia del mid range del singolo buffer
     
     if (energyRange[0] == 0 && energyRange[1] == 0 || isnan(energyRange[0]) && isnan(energyRange[1])  ) {
         beforeTransient = true;   //vuoto prima dell'inizio dell'attacco
@@ -75,11 +69,9 @@ void BeatDetector::beatDetection() {
     energyHistory.push(fftResult);
     
     
-    
-    
-    if (energyIndex >= dim-1) {
-        thresholdCalculus();  //calcolus BPMThreshold
+    if (energyIndex >= numFFTBlocksOneSecond-1) {
         
+        thresholdCalculus();  //calcolus BPMThreshold
         
         //Case: Beat is detected!
         if (energyRange[0] - 0.05 > BPMthreshold[0] || energyRange[1] - 0.005 > BPMthreshold[1]) {
@@ -87,16 +79,17 @@ void BeatDetector::beatDetection() {
             //setNoteNumber((int)(Time::getMillisecondCounterHiRes()) % 128);
             //==============
             beatTime = (int)(juce::Time::getMillisecondCounterHiRes()) % 128;
-            
-            //triggers changeListenerCallback() in the listener (PluginEditor)
-            sendChangeMessage();
+
+            sendChangeMessage();        //trigger changeListenerCallback() in the editor
         }
-        
-        energyHistory.pop();
-        
+        energyHistory.pop();        //remove oldest value in the queue
     }
     
-    energyIndex++;
+    else {
+        energyIndex++;
+    }
+    
+    
     
 }
 
@@ -127,38 +120,40 @@ float BeatDetector::averageQueue(std::queue<std::vector<float>> temporalQueue, i
     }
     
     
-    return sum / dim;
+    return sum / numFFTBlocksOneSecond;
     
     
 }
 
-//considero i sample del low-mid range, che vanno dall' 8° al 18° sample del fftData (sono 11 sample)
-float BeatDetector::performEnergyFFT(int index){
+
+float BeatDetector::calculateFFTEnergyInRange(int indexRange){
     
     float sum = 0;
     
-    if(index == 0)
+    switch(indexRange)
     {
-        for (int i = kickmin; i <= kickmax; i++) {  //KICK
-            sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
-        }
-        sum = sum / bandKick; //numero canali;
+        case 0:     //only kick range
+            for (int i = lowIndexKickRange; i <= highIndexKickRange; i++) {
+                sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
+            }
+            sum = sum / bandKick;
+            break;
+        
+        case 1:     //only snare range
+            for (int i = lowIndexSnareRange; i <= highIndexSnareRange; i++) {
+                sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
+            }
+            sum = sum / bandSnare;
+            break;
+        
+        case 2:     //kick + snare range
+            for (int i = lowIndexKickRange; i <= highIndexKickRange; i++) {
+                sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
+            }
+            for (int i = lowIndexSnareRange; i <= highIndexSnareRange; i++) {
+                sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
+            }
     }
-    else if(index == 1)
-    {
-        for (int i = snaremin; i <= snaremax; i++) {  //SNARE   //OCCHIOOOOOO
-            sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
-        }
-        sum = sum / bandSnare; //numero canali;
-    }
-	else if (index == 2) {
-		for (int i = kickmin; i <= kickmax; i++) {  //KICK
-			sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
-		}
-		for (int i = snaremin; i <= snaremax; i++) {  //SNARE   //OCCHIOOOOOO
-			sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
-		}
-	}
     return sum;
 }
 
@@ -209,7 +204,6 @@ float BeatDetector::varianceEnergyHistory(float average, std::queue<std::vector<
         }
     }
     
-    
-    return sum/dim;
+    return sum / numFFTBlocksOneSecond;
     
 }

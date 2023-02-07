@@ -62,12 +62,14 @@ public:
     
     void setThreadBoolean(bool setup);
 	int prova = 10;
-
+    
 	enum
 	{
 		fftOrder = 10,           // [1]
-		fftSize = 1 << fftOrder  // [2]
+		fftSize = 1 << fftOrder  // [2]     //fftSize = 2^10 = 1024. Number of fft samples.
 	};
+    
+    int winSize = fftSize; //Number of window samples in time domain.
 
 	void pushNextSampleIntoFifo(float sample, int channel) noexcept;
 

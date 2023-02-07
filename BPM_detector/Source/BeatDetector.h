@@ -39,7 +39,7 @@ public:
     //BPM DETECTION METHODS
     void beatDetection();
     float averageQueue(std::queue<std::vector<float>> temporalQueue, int index);
-    float performEnergyFFT(int index);
+    float calculateFFTEnergyInRange(int indexRange);
     void thresholdCalculus();
     float varianceEnergyHistory(float average, std::queue<std::vector<float>> tempQueue, int index);
     //=============================
@@ -56,13 +56,16 @@ private:
     
     PluginProcessor& processor;
     
-    int dim = round(processor.getSampleRate() / PluginProcessor::fftSize);
+    int freqRes = round(processor.getSampleRate() / PluginProcessor::fftSize);      //dim = frequency resolution: how many frequencies information is
+                                                                                    //contained into one single fft sample. (remember we have fftSize
+                                                                                    //samples in one fft block)
     
-    
+    int numFFTBlocksOneSecond = round(processor.getSampleRate() / PluginProcessor::fftSize); //num of fft buffers in one second of input processing.
+                                                                                             //In this case is the same of freq res
     int oldCount=0;
     int energyIndex = 0;
     
-    std::queue<std::vector<float>> energyHistory;
+    std::queue<std::vector<float>> energyHistory;   //queue of vectors. each vector has two values: [kick range fft energy, snare range fft energy]
     
     std::priority_queue<float> bpmQueue;
     
@@ -70,12 +73,19 @@ private:
     float BPMthreshold[2];
     
     double timeAverage = 0; //manual mode
+
+    const int lowFreqKickRange = 60;
+    const int highFreqKickRange = 130;
+    const int lowFreqSnareRange = 301;
+    const int highFreqSnareRange = 750;
     
-    int kickmin = 0;
-    int kickmax = 0;
-    int snaremin = 0;
-    int snaremax = 0;
-    int bandKick = 0;
-    int bandSnare = 0;
+    
+    const int lowIndexKickRange = round(lowFreqKickRange / freqRes);      //sample index = frequency / amount of frequency samples in one fft.
+    const int highIndexKickRange = round(highFreqKickRange / freqRes);
+    const int lowIndexSnareRange = round(lowFreqSnareRange / freqRes);
+    const int highIndexSnareRange = round(highFreqSnareRange / freqRes);
+    
+    const int bandKick = (highIndexKickRange - lowIndexKickRange) * 2;
+    const int bandSnare =( highIndexSnareRange-lowIndexSnareRange) * 2;
     
 };
