@@ -176,5 +176,7 @@ private:
 
     int bpmOffsetValue = 3;
     
+    int secondsDurationTransientPhase = 10;
+    
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginEditor)
 };

@@ -29,32 +29,32 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 
 
 	addAndMakeVisible(panCount);
-	panCount.setText("panCount: calculate...");
+	panCount.setText("Panning: ...");
 	panCount.setReadOnly(true);
 	panCount.setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x32ffffff));
 	panCount.setColour(juce::TextEditor::shadowColourId, juce::Colour(0x16000000));
 
 
 	addAndMakeVisible(spectralCount);
-	spectralCount.setText("spectralCount: calculate...");
+	spectralCount.setText("Spectral Centroid: ...");
 	spectralCount.setReadOnly(true);
 	spectralCount.setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x32ffffff));
 	spectralCount.setColour(juce::TextEditor::shadowColourId, juce::Colour(0x16000000));
 
 	addAndMakeVisible(velocitySubBar);
 	velocitySubBar.setReadOnly(true);
-	velocitySubBar.setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x32ffffff));
+    velocitySubBar.setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x32ffffff));
 	velocitySubBar.setColour(juce::TextEditor::shadowColourId, juce::Colour(0x16000000));
 	velocitySubBar.setText("Velocity: ");
 	velocitySubBar.setJustification(4);
 
 	addAndMakeVisible(velocityMessage);
-	//velocityMessage.setText("velocityMessage: calculate...");
+	velocityMessage.setText("velocityMessage: ...");
 	velocityMessage.setReadOnly(true);
 	velocityMessage.setColour(juce::TextEditor::backgroundColourId, juce::Colours::greenyellow);
 
 	addAndMakeVisible(actualBPM);
-	actualBPM.setText("BPM: calculate...");
+	actualBPM.setText("BPM: ...");
 	actualBPM.setReadOnly(true);
 	actualBPM.setColour(juce::TextEditor::backgroundColourId, juce::Colour(0x32ffffff));
 	actualBPM.setColour(juce::TextEditor::shadowColourId, juce::Colour(0x16000000));
@@ -90,7 +90,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 			beatDetector.beforeTransient = false;
 			beatDetector.transient = false;
 			beatDetector.reducedTransient = false;
-			transientAttack.applyColourToAllText(juce::Colours::white);
+			//transientAttack.applyColourToAllText(juce::Colours::white);
         }
         else {
             BPMsum = 0;
@@ -109,9 +109,9 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 	addAndMakeVisible(actualVar);
 	addAndMakeVisible(minimumVar);
 	addAndMakeVisible(transientAttack);
-	actualVar.setText("actualVar: calculate...");
-	minimumVar.setText("minimumVar: calculate...");
-	transientAttack.setText("transientAttack");
+	actualVar.setText("actualVar: ...");
+	minimumVar.setText("minimumVar: ...");
+	transientAttack.setText("transient: ON");
 	actualVar.setReadOnly(true);
 	minimumVar.setReadOnly(true);
 	transientAttack.setReadOnly(true);
@@ -138,15 +138,17 @@ PluginEditor::PluginEditor(PluginProcessor& p)
     
 	setSize(860, 450);
 
-	addAndMakeVisible(midiChannelSelector);
+    
+    //Uncomment to see it
+	//addAndMakeVisible(midiChannelSelector);
 	midiChannelSelector.setRange(1, 16, 1);
 	midiChannelSelector.setTextValueSuffix(" Ch");
 	midiChannelSelector.setValue(midiChannel);
 	midiChannelSelector.addListener(this);
 
-	addAndMakeVisible(bpmMaxSelector);
+	//addAndMakeVisible(bpmMaxSelector);
 	bpmMaxSelector.setRange(1, 200, 1);
-	bpmMaxSelector.setTextValueSuffix(" BPM");
+	bpmMaxSelector.setTextValueSuffix("BPM");
 	bpmMaxSelector.setValue(bpmMax);
 	bpmMaxSelector.addListener(this);
 
@@ -156,10 +158,11 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 	numAnimSelector.setValue(numAnimazioni);
 	numAnimSelector.addListener(this);*/
     
-    addAndMakeVisible(ipTextField);
+    //Uncomment to make visible OSC box.
+    //addAndMakeVisible(ipTextField);
     ipTextField.setText ("Processing IP: ", juce::dontSendNotification);
     
-    addAndMakeVisible(ipText);
+    //addAndMakeVisible(ipText);
     ipText.setEditable (true);
     ipText.setText ("192.168.1.4", juce::dontSendNotification);
     ipText.setColour (juce::Label::outlineColourId , juce::Colours::white);
@@ -169,7 +172,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 	getLookAndFeel().setColour(juce::Slider::thumbColourId, juce::Colours::greenyellow);
     
     
-    addAndMakeVisible(button0);
+    //addAndMakeVisible(button0);
     button0.setButtonText((juce::String)("Connect"));
     button0.onClick = [this] { changeProcessingIPAddress(); };
 
@@ -193,6 +196,8 @@ void PluginEditor::paint(juce::Graphics& g)
 	g.fillAll(juce::Colours::black);
 	g.setOpacity(1.0f);
 	g.drawImage(spectrogramImage, getLocalBounds().toFloat());
+    
+    
 
 }
 
@@ -203,39 +208,50 @@ void PluginEditor::resized()
 	auto halfWidth = getWidth() / 2;
 
 	auto buttonsBounds = getLocalBounds().withWidth(halfWidth).reduced(10);
+    
+    int offsetBottom = 130;
+    
+    transientAttack.applyColourToAllText(juce::Colours::greenyellow);
+    
+    
+    transientAttack.setBounds(buttonsBounds.getX(), 10, buttonsBounds.getWidth(), 20);
 
-	actualBPM.setBounds(buttonsBounds.getX(), 10, buttonsBounds.getWidth(), 20);
+	actualBPM.setBounds(buttonsBounds.getX(), 40 , buttonsBounds.getWidth(), 20);
 
 	midiMessagesBox.setBounds(getLocalBounds().withWidth(halfWidth).withX(halfWidth).reduced(10));
     
-    tapTempo.setBounds(buttonsBounds.getX(), 230, buttonsBounds.getWidth(), 20);
-    
-    manualMode.setBounds(buttonsBounds.getX(), 260, buttonsBounds.getWidth(), 20);
+    actualVar.setBounds(buttonsBounds.getX(), 70, buttonsBounds.getWidth(), 20);
 
-	resetVarianceBeat.setBounds(buttonsBounds.getX(), 290, buttonsBounds.getWidth(), 20);
+    minimumVar.setBounds(buttonsBounds.getX(), 100, buttonsBounds.getWidth(), 20);
+
+    panCount.setBounds(buttonsBounds.getX(), 130, buttonsBounds.getWidth(), 20);
+
+    spectralCount.setBounds(buttonsBounds.getX(), 160, buttonsBounds.getWidth(), 20);
+
+    velocitySubBar.setBounds(buttonsBounds.getX(), 190, buttonsBounds.getWidth(), 20);
+    
+    velocityMessage.setBounds(buttonsBounds.getX(), 190, buttonsBounds.getWidth(), 20);
+    
+    
+    
+    
+    
+    tapTempo.setBounds(buttonsBounds.getX(), 230 + offsetBottom, buttonsBounds.getWidth(), 20);
+    
+    manualMode.setBounds(buttonsBounds.getX(), 260 + offsetBottom, buttonsBounds.getWidth(), 20);
+
+	resetVarianceBeat.setBounds(buttonsBounds.getX(), 290 + offsetBottom, buttonsBounds.getWidth(), 20);
+    
+    //_________________________________________
+    
+    //Not visible right now
 
 	midiChannelSelector.setBounds(buttonsBounds.getX(), 330, buttonsBounds.getWidth(), 20);
 
 	bpmMaxSelector.setBounds(buttonsBounds.getX(), 360, buttonsBounds.getWidth(), 20);
 
 	/*numAnimSelector.setBounds(buttonsBounds.getX(), 390, buttonsBounds.getWidth(), 20);*/
-    
-    
-  
-	
-	actualVar.setBounds(buttonsBounds.getX(), 40, buttonsBounds.getWidth(), 20);
 
-	minimumVar.setBounds(buttonsBounds.getX(), 70, buttonsBounds.getWidth(), 20);
-
-	transientAttack.setBounds(buttonsBounds.getX(), 100, buttonsBounds.getWidth(), 20);
-
-	panCount.setBounds(buttonsBounds.getX(), 130, buttonsBounds.getWidth(), 20);
-
-	spectralCount.setBounds(buttonsBounds.getX(), 160, buttonsBounds.getWidth(), 20);
-
-	velocitySubBar.setBounds(buttonsBounds.getX(), 190, buttonsBounds.getWidth(), 20);
-    
-	velocityMessage.setBounds(buttonsBounds.getX(), 190, buttonsBounds.getWidth(), 20);
 
     ipTextField.setBounds(buttonsBounds.getX(), 390, buttonsBounds.getWidth(),20);
     
@@ -243,6 +259,7 @@ void PluginEditor::resized()
     
     button0.setBounds(buttonsBounds.getX()+315, 390, 80, 20);
     
+    //___________________________________________
 }
 
 //MIDI==========================================================================
@@ -278,16 +295,19 @@ void PluginEditor::setNoteNumber(int faderNumber, int velocity)
     
     double timeNow = juce::Time::getMillisecondCounterHiRes() * 0.001;
     
+
+    
 	if (faderNumber == 0) {
 		message.setTimeStamp(timeNow - startTime);
-		midiOutput->sendMessageNow(message);
+		//midiOutput->sendMessageNow(message);
 		//printf("\n%f", spectralCentroid.centroidL);
 
-		//velocityMessage.setText((String)maxVelocity);
+		//velocityMessage.setText((juce::String)maxVelocity);
 		velocityMessage.setBounds(getLocalBounds().withWidth(getWidth() / 2).reduced(10).getX(), 190, ((velocity * getLocalBounds().withWidth(getWidth() / 2).reduced(10).getWidth()) / 127), 20);
 		velocitySubBar.setText("Energy: " + (juce::String)velocity);
 		//countVelMess++;
         
+        /*
         //creo la coda di velocity
         if(velocityQueue.size()<queueSize){  //solo per le prime 10 iterazioni
             velocityQueue.push(velocity);
@@ -298,6 +318,7 @@ void PluginEditor::setNoteNumber(int faderNumber, int velocity)
             velocityQueue.push(velocity);
             fillVelocityQueue(velocity);
         }
+         */
         
         
         if(connectedOSC){
@@ -367,7 +388,31 @@ void PluginEditor::setNoteNumber(int faderNumber, int velocity)
             
             //________________________________________________________________________//
             
-            addMessageToList(message);  //print message on canvas
+
+            
+            if(!beatDetector.transient)
+            {
+                addMessageToList(message);  //print message on canvas, correspodning to the moment when a beat is detected.
+                actualVar.setText("actualVar: " + (juce::String)var);
+                minimumVar.setText("minimumVar: " + (juce::String)varianceBeat);
+                panCount.setText("Panning: " + (juce::String)panFeature.panValue);
+                spectralCount.setText("Spectral Centroid: " + (juce::String)(spectralCentroid.averageCentroid));
+                //________________________
+                //Velocity calculation
+                /*
+                float energySum = beatDetector.calculateFFTEnergyInRange(2);
+                float velocity = velocityRange(10*log10(1+energySum + std::numeric_limits<float>::epsilon()));
+                float energySum = beatDetector.calculateFFTEnergyInRange(2);
+                //float currBeatVelocity = velocityRange(10*log10(1+energySum + std::numeric_limits<float>::epsilon()));
+                float currBeatVelocity = velocityRange(energySum);
+                velocityMessage.setBounds(getLocalBounds().withWidth(getWidth() / 2).reduced(10).getX(), 190, ((currBeatVelocity * getLocalBounds().withWidth(getWidth() / 2).reduced(10).getWidth()) / 127), 20);
+                velocitySubBar.setText("Energy: " + (juce::String)currBeatVelocity);
+                */
+                //________________________
+                
+
+            }
+                
 
             countBPMRefresh=1;   //restart counter bpm refresh
             
@@ -376,12 +421,13 @@ void PluginEditor::setNoteNumber(int faderNumber, int velocity)
 
 	else if (onOff)
 	{
+        std::cout << "num beat: " << numBeat << std::endl;
 		lightNumber = setLightNumber(faderNumber, velocity);
 
 		message = juce::MidiMessage::controllerEvent(midiChannel, lightNumber, velocity);
 		message.setTimeStamp(timeNow - startTime);
-		midiOutput->sendMessageNow(message);
-		addMessageToList(message);
+		//midiOutput->sendMessageNow(message);
+        addMessageToList(message);
 	}
    
 }
@@ -390,13 +436,16 @@ void PluginEditor::BPMDetection(double timeNow)
 {
 	if (beatDetector.transient)
 	{
-		transientAttack.applyColourToAllText(juce::Colours::greenyellow);
-		if (timeNow - beatDetector.transientStartTime > 10)
+		//transientAttack.applyColourToAllText(juce::Colours::greenyellow);
+        //transientAttack.setText("transient: ON");
+        
+        //Transient phase lasts 10 seconds.
+		if (timeNow - beatDetector.transientStartTime > secondsDurationTransientPhase)
 		{
 			beatDetector.transient = false;
 			minVelocity = std::numeric_limits<float>::max();
 			maxVelocity = std::numeric_limits<float>::min();
-			transientAttack.applyColourToAllText(juce::Colours::white);
+			//transientAttack.applyColourToAllText(juce::Colours::white);
 		}
 		if (beatDetector.reducedTransient)
 		{
@@ -408,6 +457,8 @@ void PluginEditor::BPMDetection(double timeNow)
 
 	else 
 	{
+        //transientAttack.setText("transient: OFF");
+        
 		double deltaT = timeNow - prevTime - startTime;
 		deltaTQueue.push(deltaT);
 
@@ -471,12 +522,12 @@ void PluginEditor::BPMDetection(double timeNow)
                 
 				
 			}
-            
+            /*
 			actualVar.setText("actualVar: " + (juce::String)var);
 			minimumVar.setText("minimumVar: " + (juce::String)varianceBeat);
             panCount.setText("Panning: " + (juce::String)panFeature.panValue);
             spectralCount.setText("SpectralCentroidMid: " + (juce::String)(spectralCentroid.averageCentroid));
-
+            */
 			BPMsum = BPMsum - deltaTQueue.front();
 			BPMsumq = BPMsumq - (deltaTQueue.front() * deltaTQueue.front());
 			deltaTQueue.pop();
@@ -621,21 +672,48 @@ void PluginEditor::drawNextLineOfSpectrogram()
     
     spectralCentroid.run();        //START SPECTRAL CENTROID THREAD
     
+    //________________________
+    //Velocity calculation
     
-	//-----FORSE
 	float energySum = beatDetector.calculateFFTEnergyInRange(2);
+    float velocity = velocityRange(energySum);
+    
+    velocityMessage.setBounds(getLocalBounds().withWidth(getWidth() / 2).reduced(10).getX(), 190, ((velocity * getLocalBounds().withWidth(getWidth() / 2).reduced(10).getWidth()) / 127), 20);
+    //velocitySubBar.setText("Energy: " + (juce::String)velocity);
+    velocitySubBar.setText("Loudness");
+
+    //________________________
+    
+    
     if(connectedOSC)     //solo se effettivamente connetto inizio ad aggiornare l' energia
-        setNoteNumber(0, velocityRange(10*log10(1+energySum + std::numeric_limits<float>::epsilon())));
+    {
+        float energySum = beatDetector.calculateFFTEnergyInRange(2);
+        float velocity = velocityRange(10*log10(1+energySum + std::numeric_limits<float>::epsilon()));
+        setNoteNumber(0, velocity);
+        
+    }
     
+    //Disabled:AGGIORNO IL CALCOLO DEL BPM SE NON ARRIVA UN BEAT ENTRO secondsBeforeRefreshBPM SECONDI
+    /*
     double time_now = juce::Time::getMillisecondCounterHiRes() * 0.001;
-    
-    //AGGIORNO IL CALCOLO DEL BPM SE NON ARRIVA UN BEAT ENTRO secondsBeforeRefreshBPM SECONDI
     if(time_now-prev_time_bpm>secondsBeforeRefreshBPM){     //secondsBeforeRefreshBPM è il num di secondi di attesa se non arriva un beat allora refresho
         //printf("%f  -   %f\n", time_now,prev_time_bpm);
         prev_time_bpm = time_now;
         //refreshBPMcalculation();
         
         countBPMRefresh++;
+    }
+     */
+    
+    if(beatDetector.transient){
+        transientAttack.setText("transient: ON");
+        transientAttack.applyColourToAllText(juce::Colours::greenyellow);
+        
+    }
+    else{
+        transientAttack.setText("transient: OFF");
+        transientAttack.applyColourToAllText(juce::Colours::white);
+        
     }
      
 }
@@ -666,9 +744,11 @@ int PluginEditor::velocityRange(float energyAmount) {
 
 void PluginEditor::timerCallback()
 {
+    /*
 	if (beatDetector.beforeTransient) {
 		transientAttack.applyColourToAllText(juce::Colours::white);
 	}
+     */
     
 	if (processor.getNextFFTBlockReady())
 	{
@@ -849,6 +929,7 @@ void PluginEditor::fillVelocityQueue(float velocity){
     }
 
     averageVelocity = (sum+0.00000001) / queueSize;
+    
 
 }
 
