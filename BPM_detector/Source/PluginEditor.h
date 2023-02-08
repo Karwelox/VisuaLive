@@ -115,7 +115,7 @@ private:
     int prevBPM=0;
 	double prevTime = 0;
 	double prevTimeTemp = 0;
-	std::queue<double> deltaTQueue;
+	std::queue<double> deltaTQueue;     //each value in the queue is the difference of consecutive times where a beat is detected.
     
     double var = 0;
     

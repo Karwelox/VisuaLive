@@ -134,24 +134,28 @@ float BeatDetector::calculateFFTEnergyInRange(int indexRange){
     {
         case 0:     //only kick range
             for (int i = lowIndexKickRange; i <= highIndexKickRange; i++) {
-                sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
+                //sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
+                sum = sum + std::pow((processor.fftDataL[i] + processor.fftDataR[i]),2);
             }
             sum = sum / bandKick;
             break;
         
         case 1:     //only snare range
             for (int i = lowIndexSnareRange; i <= highIndexSnareRange; i++) {
-                sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
+                //sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
+                sum = sum + std::pow((processor.fftDataL[i] + processor.fftDataR[i]),2);
             }
             sum = sum / bandSnare;
             break;
         
         case 2:     //kick + snare range
             for (int i = lowIndexKickRange; i <= highIndexKickRange; i++) {
-                sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
+                //sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
+                sum = sum + std::pow((processor.fftDataL[i] + processor.fftDataR[i]),2);
             }
             for (int i = lowIndexSnareRange; i <= highIndexSnareRange; i++) {
-                sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
+                //sum = sum + processor.fftDataL[i] + processor.fftDataR[i];
+                sum = sum + std::pow((processor.fftDataL[i] + processor.fftDataR[i]),2);
             }
     }
     return sum;

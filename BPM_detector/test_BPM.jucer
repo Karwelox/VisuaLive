@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="qvLYIu" name="test_BPM" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
-  <MAINGROUP id="sVr0Rz" name="test_BPM">
+<JUCERPROJECT id="qvLYIu" name="beatLive" projectType="audioplug" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginName="beatLive"
+              pluginDesc="beatLive" pluginManufacturer="carmelofascella">
+  <MAINGROUP id="sVr0Rz" name="beatLive">
     <GROUP id="{A18A4A9A-6855-CF1E-0EF7-20D320E3B423}" name="Source">
       <FILE id="qgJhkW" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
@@ -26,8 +27,8 @@
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="test_BPM"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="test_BPM"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="beatLive"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="beatLive"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../../../../JUCE/modules"/>

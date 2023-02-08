@@ -325,17 +325,14 @@ void PluginEditor::setNoteNumber(int faderNumber, int velocity)
         
 	}
 
-	else if (timeNow - prevTime - startTime > 0.3 && !onOff)   //200bpm massimi
+	else if (timeNow - prevTime - startTime > 0.3 && !onOff)
 	{
-		//BPMDetection(timeNow);
-		//prevTime = timeNow - startTime; //occhio
         
-        //prev_time_bpm = timeNow;   //variabile usata per il refresh del bpm
-        
-		if (timeNow - prevTimeTemp - startTime > (60 / bpmMax))
+		if (timeNow - prevTimeTemp - startTime > (60 / bpmMax))   //Check to set 200bpm massimi
 		{
             BPMDetection(timeNow);
-            prevTime = timeNow - startTime; //occhio
+            
+            prevTime = timeNow - startTime;
             
             prev_time_bpm = timeNow;   //variabile usata per il refresh del bpm
             
@@ -421,9 +418,9 @@ void PluginEditor::BPMDetection(double timeNow)
 		BPMsum = BPMsum + deltaT;
 		BPMsumq = BPMsumq + (deltaT * deltaT);
 
-		if (numBeat >= numBeatSize)
+		if (numBeat >= numBeatSize)     //start calculating BPM after "numBeatSize" detected beats
 		{
-               //nuova variabile
+
             int roundedIndexNewQueue = countNewQueue%numComparisonBeatSize;   //perchè voglio avere nuove code ogni beatSize
             
             createComparisonBPMQueue(timeNow, roundedIndexNewQueue, deltaT);
@@ -439,7 +436,7 @@ void PluginEditor::BPMDetection(double timeNow)
             
             
             
-            
+            //Case: current var is lower than minimum var
 			if (var < varianceBeat)
 			{
                 
@@ -597,6 +594,7 @@ void PluginEditor::drawNextLineOfSpectrogram()
     
 	for (int i = 0; i <= processor.fftSize / 2; i++) {
         processor.newFftData[i] = (processor.fftDataL[i] + processor.fftDataR[i])/2;
+        //processor.newFftData[i] = std::pow((processor.fftDataL[i] + processor.fftDataR[i]), 2) / (processor.fftSize/2);
 	}
     
     
@@ -671,7 +669,6 @@ void PluginEditor::timerCallback()
 	if (beatDetector.beforeTransient) {
 		transientAttack.applyColourToAllText(juce::Colours::white);
 	}
-    //std::cout << "fft ready? " << processor.getNextFFTBlockReady() << std::endl;
     
 	if (processor.getNextFFTBlockReady())
 	{
@@ -681,10 +678,10 @@ void PluginEditor::timerCallback()
 	}
 }
 
+//Scale values between their minimum and maximum. Min and max are always updated
 void PluginEditor::findRangeValueFunction(float* data, int index)
 {
-    //float* data = processor.getFFTData();
-
+    
     for(int i = 0; i < PluginProcessor::fftSize / 2; i++) {
         if(data[i] > maxAbs)
             maxAbs = data[i];
@@ -693,7 +690,6 @@ void PluginEditor::findRangeValueFunction(float* data, int index)
     }
     
     scaleFunction(data, index);
-   
 }
 
 void PluginEditor::scaleFunction(float* data, int index)
@@ -878,8 +874,7 @@ void PluginEditor::changeProcessingIPAddress(){
 void PluginEditor::createComparisonBPMQueue(double timeNow, int roundedIndexNewQueue, double deltaT){
     
     
-    if (roundedIndexNewQueue<numComparisonBeatSize-1){   //caso in cui sto ricreando una coda temporanea
-        
+    if (roundedIndexNewQueue<numComparisonBeatSize-1){   //Case: creating comparing queue, we have detected less than numComparisonBeatSize beats.
         comparisonDeltaTQueue.push(timeNow);
         comparisonBPMsum = BPMsum + deltaT;
         comparisonBPMsumq = BPMsumq + (deltaT * deltaT);
@@ -889,14 +884,13 @@ void PluginEditor::createComparisonBPMQueue(double timeNow, int roundedIndexNewQ
     }
     
     
-    else{  //caso in cui inizializzo la nuova coda
-        //CONFRONTO
+    else{  //Case: initialize new queue
+  
         int comparisonBPM = round(60 / comparisonAv);
-        
         
         //printf("\nBPM attuale: %d  || Varianza attuale: %f", comparisonBPM, comparisonVar);
         
-        //se la varianza della coda attuale è minore di una soglia predefinita:
+        //se la varianza della coda attuale è minore di una soglia predefinita (Hardcoded):
         //1) aggiorno la varianza minima del sistema
         //2) aggiorno il valore del bpm
         if((comparisonVar < 0.001  && (comparisonBPM>prevBPM+bpmOffsetValue || comparisonBPM<prevBPM-bpmOffsetValue))
@@ -904,7 +898,6 @@ void PluginEditor::createComparisonBPMQueue(double timeNow, int roundedIndexNewQ
            )
         {
 
-            
             if(comparisonVar < 0.001  && (comparisonBPM>prevBPM+bpmOffsetValue || comparisonBPM<prevBPM-bpmOffsetValue)){
                 printf("\nCASO 1: BPM attuale: %d  || Varianza attuale: %f", comparisonBPM, comparisonVar);
             }
