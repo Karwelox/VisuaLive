@@ -47,17 +47,19 @@ void PanFeature::panFeatureFunction()
 
     int panLeft = 0, panRight = 0;
     
+    //for (int i = 0; i < processor.fftSize / 2; i++)
     for (int i = 0; i < processor.fftSize / 2; i++)
     {
-        if (processor.fftDataL[i] - processor.fftDataR[i] > 0)
+
+        if ((processor.fftDataL[i] - processor.fftDataR[i]) > 0)
         {
             panLeft++;
         }
-        else if (processor.fftDataL[i] - processor.fftDataR[i] < 0)
+        else if ((processor.fftDataL[i] - processor.fftDataR[i]) < 0)
         {
             panRight++;
         }
-     
+
     }
     float currPanValue = (float)(panRight - panLeft)/ (PluginProcessor::fftSize / 2);
     

@@ -49,7 +49,7 @@ PluginEditor::PluginEditor(PluginProcessor& p)
 	velocitySubBar.setJustification(4);
 
 	addAndMakeVisible(velocityMessage);
-	velocityMessage.setText("velocityMessage: ...");
+	//velocityMessage.setText("velocityMessage: ...");
 	velocityMessage.setReadOnly(true);
 	velocityMessage.setColour(juce::TextEditor::backgroundColourId, juce::Colours::greenyellow);
 
@@ -394,9 +394,11 @@ void PluginEditor::setNoteNumber(int faderNumber, int velocity)
             {
                 addMessageToList(message);  //print message on canvas, correspodning to the moment when a beat is detected.
                 actualVar.setText("actualVar: " + (juce::String)var);
-                minimumVar.setText("minimumVar: " + (juce::String)varianceBeat);
+                if(varianceBeat < updatedVarianceBeat){
+                    minimumVar.setText("minimumVar: " + (juce::String)varianceBeat);
+                }
                 panCount.setText("Panning: " + (juce::String)panFeature.panValue);
-                spectralCount.setText("Spectral Centroid: " + (juce::String)(spectralCentroid.averageCentroid));
+                spectralCount.setText("Spectral Centroid: " + (juce::String)(spectralCentroid.averageCentroid) + " Hz");
                 //________________________
                 //Velocity calculation
                 /*
@@ -460,6 +462,7 @@ void PluginEditor::BPMDetection(double timeNow)
         //transientAttack.setText("transient: OFF");
         
 		double deltaT = timeNow - prevTime - startTime;
+        
 		deltaTQueue.push(deltaT);
 
 		numBeat++;
@@ -511,6 +514,10 @@ void PluginEditor::BPMDetection(double timeNow)
                     
                     varianceBeat = var;
                     actualBPM.setText("BPM: " + (juce::String)BPM);
+                    if(varianceBeat < updatedVarianceBeat){
+                        minimumVar.setText("minimumVar: " + (juce::String)varianceBeat);
+                    }
+                    
                     
                     printf("\nCODA SUPREMA. BPM attuale: %d  || Varianza attuale: %f", BPM, var);
                     
@@ -597,8 +604,10 @@ void PluginEditor::addMessageToList(const juce::MidiMessage& message)
 		//logMessage(timecode + " - |" + (juce::String)lightNumber + "|" + " " + getMidiMessageDescription(message));
     */
     
-    logMessage(timecode + " - | Beat Detected | Triggered light pattern: " + (juce::String)lightNumber);
-     
+    //logMessage(timecode + " - | Beat Detected | Triggered light pattern: " + (juce::String)lightNumber);
+    
+    logMessage(timecode + " - | Beat Detected | Triggered light pattern. ");
+    
 
 }
 
@@ -656,9 +665,9 @@ void PluginEditor::drawNextLineOfSpectrogram()
 	for (auto y = 1; y < imageHeight; ++y)                                                            // [4]
 	{
 		auto skewedProportionY = 1.0f - std::exp(std::log(y / (float)imageHeight) * 0.2f);
-		auto fftDataIndex = juce::jlimit(0, processor.fftSize / 2, (int)(skewedProportionY * processor.fftSize / 2));
+		auto fftDataIndex = juce::jlimit(0, processor.fftSize / 3, (int)(skewedProportionY * processor.fftSize / 3));  //orig / 2
 		auto level = juce::jmap(processor.fftDataL[fftDataIndex] + processor.fftDataR[fftDataIndex], 0.0f, juce::jmax(maxLevel.getEnd(), 1e-5f), 0.0f, 1.0f);
-		spectrogramImage.setPixelAt(rightHandEdge, y, juce::Colour::fromHSV(level, 1.0f, level, 1.0f));   // [5]
+		spectrogramImage.setPixelAt(rightHandEdge, y, juce::Colour::fromHSV(level, 1.0f, level, 0.5f));   // [5]
 	}
 
     findRangeValueFunction(processor.fftDataL, 0);
@@ -992,7 +1001,7 @@ void PluginEditor::createComparisonBPMQueue(double timeNow, int roundedIndexNewQ
             
             
             //printf("\nBPM attuale: %d  || Varianza attuale: %f", comparisonBPM, comparisonVar);
-            varianceBeat = 0.001;
+            varianceBeat = updatedVarianceBeat;
             actualBPM.setText("BPM: " + (juce::String)BPM);
             
             if(connectedOSC){

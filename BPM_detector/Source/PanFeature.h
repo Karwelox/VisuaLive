@@ -43,5 +43,5 @@ private:
     std::queue<float> panQueue;
     
     int queueSize = 43;     //amout of centroid values to average to give the final result
-
+    //int queueSize = 10;
 };
