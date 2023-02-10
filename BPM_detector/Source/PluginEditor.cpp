@@ -394,7 +394,7 @@ void PluginEditor::setNoteNumber(int faderNumber, int velocity)
             {
                 addMessageToList(message);  //print message on canvas, correspodning to the moment when a beat is detected.
                 actualVar.setText("actualVar: " + (juce::String)var);
-                if(varianceBeat < updatedVarianceBeat){
+                if(varianceBeat != updatedVarianceBeat){
                     minimumVar.setText("minimumVar: " + (juce::String)varianceBeat);
                 }
                 panCount.setText("Panning: " + (juce::String)panFeature.panValue);
@@ -514,7 +514,7 @@ void PluginEditor::BPMDetection(double timeNow)
                     
                     varianceBeat = var;
                     actualBPM.setText("BPM: " + (juce::String)BPM);
-                    if(varianceBeat < updatedVarianceBeat){
+                    if(varianceBeat != updatedVarianceBeat){
                         minimumVar.setText("minimumVar: " + (juce::String)varianceBeat);
                     }
                     
